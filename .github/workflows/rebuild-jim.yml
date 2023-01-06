@@ -60,25 +60,21 @@ jobs:
         submodules: recursive
 
     - name: Build custom Jim for Intel
-      shell: alpine.sh
       id: build-jim-intel
       run: |
         tclsh build.tcl -arch x86_64
 
     - name: Build custom Jim for ARM
-      shell: alpine.sh
       id: build-jim-arm
       run: |
         tclsh build.tcl -arch arm64
 
     - name: Build default Jim for Intel
-      shell: alpine.sh
       id: build-jim-default-intel
       run: |
         tclsh build.tcl -profile default -arch x86_64
 
     - name: Build default Jim for ARM
-      shell: alpine.sh
       id: build-jim-default-arm
       run: |
         tclsh build.tcl -profile default -arch arm64
