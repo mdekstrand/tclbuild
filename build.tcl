@@ -5,7 +5,10 @@
 
 set tbroot [file dirname [info script]]
 set tbroot [file normalize $tbroot]
-set auto_path [linsert $auto_path 0 "$tbroot/lib" "$tbroot/common"]
+foreach dir {lib common} {
+    set auto_path [linsert $auto_path 0 [file join $tbroot $dir]]
+}
+unset $dir
 
 package require logging
 package require platinfo

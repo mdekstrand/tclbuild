@@ -8,8 +8,7 @@
 # script is sourced, the variable $dir must contain the
 # full path name of this file's directory.
 
-package ifneeded ansifmt 0.1 [list source [file join $dir ansifmt.tcl]]
-package ifneeded cmdline 1.5.2 [list source [file join $dir cmdline.tcl]]
-package ifneeded logging 0.1 [list source [file join $dir logging.tcl]]
-package ifneeded missing 1.0 [list source [file join $dir missing.tcl]]
-package ifneeded platinfo 0.1 [list source [file join $dir platinfo.tcl]]
+package ifneeded tclbuild::common 1.0 [list source [file join $dir common.tcl]]
+package ifneeded tclbuild::linux 1.0 [list source [file join $dir linux.tcl]]
+package ifneeded tclbuild::macos 1.0 [list source [file join $dir macos.tcl]]
+package ifneeded tclbuild::windows 1.0 [list source [file join $dir windows.tcl]]
