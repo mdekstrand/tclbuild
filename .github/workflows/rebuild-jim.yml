@@ -47,7 +47,7 @@ jobs:
 
     - uses: actions/upload-artifact@v3
       with:
-        name: jimsh-${{ steps.build-jim.build-tag }}
+        name: jimsh-${{ steps.build-jim.outputs.build-tag }}
         path: dist/
 
   macos:

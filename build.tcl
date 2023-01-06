@@ -6,16 +6,10 @@
 set tbroot [file dirname [info script]]
 set tbroot [file normalize $tbroot]
 set auto_path [linsert $auto_path 0 [file join $tbroot lib]]
-switch -- $tcl_platform(engine) {
-    Tcl {
-        set auto_path [linsert $auto_path 0 [file join $tbroot common]]
-    }
-    Jim {
-        set auto_path [linsert $auto_path 0 [file join $tbroot common lib]]
-    }
-    default {
-        error "unknown Tcl engine"
-    }
+if {[info exists jimsh::exe]} {
+    set auto_path [linsert $auto_path 0 [file join $tbroot common lib]]
+} else {
+    set auto_path [linsert $auto_path 0 [file join $tbroot common]]
 }
 
 package require logging
