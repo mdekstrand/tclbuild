@@ -42,7 +42,7 @@ jobs:
     - name: Build default Jim
       shell: alpine.sh {0}
       id: build-jim-default
-      if: matrix.arch == "x86_64"
+      if: ${{ matrix.arch == 'x86_64' }}
       run: |
         tclsh build.tcl -profile default
 
