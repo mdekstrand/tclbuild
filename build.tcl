@@ -5,7 +5,7 @@
 
 set tbroot [file dirname [info script]]
 set tbroot [file normalize $tbroot]
-set auto_path [linsert $auto_path 0 "$tbroot/lib"]
+set auto_path [linsert $auto_path 0 "$tbroot/lib" "$tbroot/common"]
 
 package require logging
 package require platinfo
