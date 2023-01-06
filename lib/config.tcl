@@ -31,3 +31,17 @@ namespace eval config {
         msg "configured to build for [tag]"
     }
 }
+
+proc try_require {pkg onfail} {
+    set failed [catch [subst {
+        uplevel 1 package require $pkg
+    }] res opts]
+    if {$failed} {
+        if {[string equal $opts(-errorcode) "TCL PACKAGE UNFOUND"]} {
+            uplevel 1 $onfail
+        } else {
+            msg -err "unexpected package import error: $msg"
+            error "import failure"
+        }
+    }
+}

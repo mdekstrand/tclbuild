@@ -52,31 +52,23 @@ while {![lempty $argv]} {
 
 config::finalize
 
-try {
-    package require "tclbuild::build::$config::stack"
-} trap {TCL PACKAGE UNFOUND} {} {
+try_require "tclbuild::build::$config::stack" {
     msg -err "unknown stack $config::stack"
     exit 3
-} on ok {} {
-    msg "setting up to build $config::stack"
 }
+msg "setting up to build $config::stack"
 
-try {
-    package require "tclbuild::os::$config::os"
-} trap {TCL PACKAGE UNFOUND} {} {
+try_require "tclbuild::os::$config::os" {
     msg -err "unsupported operating system $config::os"
     exit 3
 }
 
-try {
-    package require "tclbuild::profile::${config::stack}::${config::profile}"
-    set product "$config::stack-$config::profile"
-} trap {TCL PACKAGE UNFOUND} {} {
+try_require "tclbuild::profile::${config::stack}::${config::profile}" {
     msg -err "$config::stack: unknown profile $config::profile"
     exit 3
-} on ok {} {
-    msg "$config::stack: building with profile $config::profile"
 }
+msg "$config::stack: building with profile $config::profile"
+set product "$config::stack-$config::profile"
 
 if {![info exists distdir]} {
     set distdir "dist/$product"
