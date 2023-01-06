@@ -134,6 +134,7 @@ if {[regexp {^HMAC-[A-Z0-9-]+\(([a-zA-Z0-9/-]+)\)=\s+([0-9a-f]+)} $sigout -> pat
     close $hfp
 } else {
     msg -err "cannot parse hash: $sigout"
+    exit 5
 }
 
 msg -success "$distfile: $digest"
