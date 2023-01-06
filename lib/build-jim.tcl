@@ -1,5 +1,6 @@
 package provide tclbuild::build::jim 1.0
 package require tclbuild::config
+package require tclbuild::buildenv
 package require missing
 package require runprog
 
@@ -11,6 +12,7 @@ proc ::build::init {} {
     variable jimdir
     msg "building jim at $jimdir"
     cd $jimdir
+    ::buildenv::setup_env
 }
 
 proc ::build::clean {} {
