@@ -108,7 +108,7 @@ jobs:
 
     - name: Build custom Jim for Windows
       id: build-jim
-      shell: msys2 -mingw32
+      shell: msys2 -mingw32 {0}
       run: |
         tclsh build.tcl -arch x86_64
 
