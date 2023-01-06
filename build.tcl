@@ -23,7 +23,7 @@ package require platinfo
 package require missing
 package require tclbuild::config
 
-set actions {}
+set fresh_build 1
 
 while {![lempty $argv]} {
     set arg [lshift argv]
@@ -32,6 +32,10 @@ while {![lempty $argv]} {
         -verbose { logging::configure -verbose }
         -q { logging::configure -quiet }
         -quiet { logging::configure -quiet }
+
+        -noclean {
+            set fresh_build 0
+        }
 
         -arch {
             set config::arch [lshift argv]
@@ -72,6 +76,7 @@ try {
 
 try {
     package require "tclbuild::profile::${config::stack}::${config::profile}"
+    set product "$config::stack-$config::profile"
 } trap {TCL PACKAGE UNFOUND} {} {
     msg -err "$config::stack: unknown profile $config::profile"
     exit 3
@@ -79,11 +84,56 @@ try {
     msg "$config::stack: building with profile $config::profile"
 }
 
+if {![info exists distdir]} {
+    set distdir "dist/$product"
+}
+
 # now we are ready to go
 buildenv::configure
 build::init
-build::clean
+if {$fresh_build} {
+    build::clean
+}
 build::configure
 build::make
+build::finish
 
-msg -success "built [build::executable -path]"
+set result [build::executable -path]
+msg -success "built $result"
+
+set exename [file tail $result]
+if {![plat::is windows]} {
+    if {![string equal $buildenv::extsuffix ""]} {
+        msg -err "non-windows platform has exe suffix $buildenv::extsuffix, que pasa?"
+        error "unexpected platform configuration"
+    }
+
+    set exename "$exename-[plat::tag]"
+}
+
+
+set distfile [file join $distdir $exename]
+msg "preparing distribution $distfile"
+file mkdir $distdir
+file copy -force $result $distfile
+
+if {[info exists env(TCLBUILD_SIGN_KEY)]} {
+    msg -debug "getting signing key from TCLBUILD_SIGN_KEY"
+    set sign_key $env(TCLBUILD_SIGN_KEY)
+} else {
+    msg -warn "no sign key provided, using default key 'UNSAFE'"
+    set sign_key UNSAFE
+}
+
+msg "signing result file"
+set sigout [exec openssl dgst -hmac $sign_key -sha256 $distfile 2>@stderr]
+msg -debug $sigout
+if {[regexp {^HMAC-SHA256\(([a-zA-Z0-9/-]+)\)=\s+([0-9a-f]+)} $sigout -> path digest]} {
+    set hfp [open "$distfile.mac" w]
+    puts $hfp $digest
+    close $hfp
+} else {
+    msg -err "cannot parse hash: $sigout"
+}
+
+msg -success "$distfile: $digest"

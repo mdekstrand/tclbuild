@@ -2,7 +2,7 @@ package provide tclbuild::buildenv 1.0
 
 namespace eval buildenv {
     variable envvars
-    variable backups {}
+    variable extsuffix ""
     array set envvars {}
 
     proc setvar {var value} {

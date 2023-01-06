@@ -5,7 +5,7 @@ package require tclbuild::buildenv
 
 namespace eval ::buildenv {
     proc configure {} {
-        set $host_arch [plat::arch]
+        set host_arch [plat::arch]
         if {![string equal $config::arch $host_arch]} {
             msg "cross-building for architecture $config::arch"
             ::buildenv::setvar CFLAGS "-arch $config::arch -Os"

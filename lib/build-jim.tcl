@@ -6,10 +6,12 @@ package require runprog
 
 namespace eval ::build {
     variable jimdir jimtcl
+    variable _save_pwd
 }
 
 proc ::build::init {} {
     variable jimdir
+    variable _save_pwd [pwd]
     msg "building jim at $jimdir"
     cd $jimdir
     ::buildenv::setup_env
@@ -18,13 +20,18 @@ proc ::build::init {} {
 proc ::build::clean {} {
     if {[file exists Makefile]} {
         msg "jim: cleaning build"
-        run make clean
+        run make distclean
     } else {
         msg "jim: no Makefile, clean looks unnecessary"
     }
 }
 
 proc ::build::configure {} {
+    if {[file exists jim-config.h]} {
+        msg "jim: already configured, skipping"
+        return
+    }
+
     set args {}
     set exts [::config::extensions]
     set disable {}
@@ -68,4 +75,11 @@ proc ::build::executable {args} {
         set file [file join $jimdir $file]
     }
     return $file
+}
+
+proc ::build::finish {} {
+    variable _save_pwd
+    msg -debug "restoring old working directory"
+    cd $_save_pwd
+    unset _save_pwd
 }
