@@ -8,9 +8,9 @@ namespace eval ::buildenv {
         set $host_arch [plat::arch]
         if {![string equal $config::arch $host_arch]} {
             msg "cross-building for architecture $config::arch"
-            ::buildenv::set CFLAGS "-arch $config::arch -Os"
+            ::buildenv::setvar CFLAGS "-arch $config::arch -Os"
         } else {
-            ::buildenv::set CFLAGS -Os
+            ::buildenv::setvar CFLAGS -Os
         }
     }
 }

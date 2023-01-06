@@ -5,6 +5,6 @@ package require tclbuild::buildenv
 
 namespace eval ::buildenv {
     proc configure {} {
-        ::buildenv::set CFLAGS "-Os -static"
+        ::buildenv::setvar CFLAGS "-Os -static"
     }
 }

@@ -5,7 +5,7 @@ namespace eval buildenv {
     variable backups {}
     array set envvars {}
 
-    proc set {var value} {
+    proc setvar {var value} {
         variable envvars
         set envvars($var) $value
     }
