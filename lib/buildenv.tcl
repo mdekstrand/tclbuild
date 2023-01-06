@@ -2,7 +2,8 @@ package provide tclbuild::buildenv 1.0
 
 namespace eval buildenv {
     variable envvars
-    variable extsuffix ""
+    variable extsuffix
+    set extsuffix ""
     array set envvars {}
 
     proc setvar {var value} {
