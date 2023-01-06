@@ -4,6 +4,10 @@ on:
     branches:
     - main
 
+concurrency:
+  group: test-${{github.ref}}
+  cancel-in-progress: true
+
 jobs:
   linux:
     name: Build jimtcl for linux-${{matrix.arch}}
@@ -30,13 +34,13 @@ jobs:
         packages: build-base openssl tcl
 
     - name: Build custom Jim
-      shell: alpine.sh
+      shell: alpine.sh {0}
       id: build-jim
       run: |
         tclsh build.tcl
 
     - name: Build default Jim
-      shell: alpine.sh
+      shell: alpine.sh {0}
       id: build-jim-default
       run: |
         tclsh build.tcl -profile default
