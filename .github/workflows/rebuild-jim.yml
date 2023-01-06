@@ -101,6 +101,7 @@ jobs:
     - uses: msys2/setup-msys2@v2
       with:
         update: true
+        msystem: mingw32
         install: >-
           openssl
           mingw-w64-i686-gcc
@@ -108,9 +109,9 @@ jobs:
 
     - name: Build custom Jim for Windows
       id: build-jim
-      shell: msys2 -mingw32 {0}
+      shell: msys2 {0}
       run: |
-        tclsh build.tcl -arch x86_64
+        tclsh build.tcl
 
     - uses: actions/upload-artifact@v3
       with:
