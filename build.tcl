@@ -89,8 +89,8 @@ msg -success "built $result"
 
 set exename [file tail $result]
 if {![plat::is windows]} {
-    if {![string equal $buildenv::extsuffix ""]} {
-        msg -err "non-windows platform has exe suffix $buildenv::extsuffix, que pasa?"
+    if {![string equal $buildenv::exesuffix ""]} {
+        msg -err "non-windows platform has exe suffix $buildenv::exesuffix, que pasa?"
         error "unexpected platform configuration"
     }
 
