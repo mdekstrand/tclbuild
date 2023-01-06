@@ -128,7 +128,7 @@ if {[info exists env(TCLBUILD_SIGN_KEY)]} {
 msg "signing result file"
 set sigout [exec openssl dgst -hmac $sign_key -sha256 $distfile 2>@stderr]
 msg -debug $sigout
-if {[regexp {^HMAC-[A-Z0-9-]+\(([a-zA-Z0-9/-]+)\)=\s+([0-9a-f]+)} $sigout -> path digest]} {
+if {[regexp {^HMAC-[A-Z0-9-]+\(([a-zA-Z0-9/_-]+)\)=\s+([0-9a-f]+)} $sigout -> path digest]} {
     set hfp [open "$distfile.mac" w]
     puts $hfp $digest
     close $hfp
