@@ -88,3 +88,28 @@ jobs:
       with:
         name: jimsh-macos
         path: dist/
+
+  windows:
+    name: Build jimtcl for Windows
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+
+    - name: Set up MingW dependencies
+      shell: msys2bash
+      run: |
+        pacman -S tcl mingw-w64-i686-gcc
+
+    - name: Build custom Jim for Windows
+      id: build-jim
+      shell: msys2bash -mingw32
+      run: |
+        tclsh build.tcl -arch x86_64
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: jimsh-macos
+        path: dist/
