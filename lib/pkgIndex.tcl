@@ -8,7 +8,12 @@
 # script is sourced, the variable $dir must contain the
 # full path name of this file's directory.
 
-package ifneeded tclbuild::common 1.0 [list source [file join $dir common.tcl]]
-package ifneeded tclbuild::linux 1.0 [list source [file join $dir linux.tcl]]
-package ifneeded tclbuild::macos 1.0 [list source [file join $dir macos.tcl]]
-package ifneeded tclbuild::windows 1.0 [list source [file join $dir windows.tcl]]
+package ifneeded tclbuild::build::jim 1.0 [list source [file join $dir build-jim.tcl]]
+package ifneeded tclbuild::buildenv 1.0 [list source [file join $dir buildenv.tcl]]
+package ifneeded tclbuild::config 1.0 [list source [file join $dir config.tcl]]
+package ifneeded tclbuild::os::darwin 1.0 [list source [file join $dir os/darwin.tcl]]
+package ifneeded tclbuild::os::linux 1.0 [list source [file join $dir os/linux.tcl]]
+package ifneeded tclbuild::os::windows 1.0 [list source [file join $dir os/windows.tcl]]
+package ifneeded tclbuild::profile::jim::custom 1.0 [list source [file join $dir profiles/jim-custom.tcl]]
+package ifneeded tclbuild::profile::jim::full 1.0 [list source [file join $dir profiles/jim-full.tcl]]
+package ifneeded tclbuild::profile::jim::stock 1.0 [list source [file join $dir profiles/jim-stock.tcl]]
