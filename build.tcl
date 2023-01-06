@@ -80,6 +80,7 @@ try {
 }
 
 # now we are ready to go
+buildenv::configure
 build::init
 build::clean
 build::configure
