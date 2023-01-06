@@ -6,7 +6,6 @@ namespace eval config {
     variable os
     variable stack jim
     variable profile custom
-    variable extsuffix ""
 
     namespace export tag finalize
 
@@ -37,7 +36,8 @@ proc try_require {pkg onfail} {
         uplevel 1 package require $pkg
     }] res opts]
     if {$failed} {
-        if {[string equal $opts(-errorcode) "TCL PACKAGE UNFOUND"]} {
+        set code [dict get $opts -errorcode]
+        if {[string equal $code "TCL PACKAGE UNFOUND"]} {
             uplevel 1 $onfail
         } else {
             msg -err "unexpected package import error: $msg"

@@ -70,7 +70,7 @@ proc ::build::make {} {
 
 proc ::build::executable {args} {
     variable jimdir
-    set file "jimsh$config::extsuffix"
+    set file "jimsh$::buildenv::exesuffix"
     if {[string equal [lindex $args 0] -path]} {
         set file [file join $jimdir $file]
     }
