@@ -15,5 +15,5 @@ package ifneeded tclbuild::os::darwin 1.0 [list source [file join $dir os/darwin
 package ifneeded tclbuild::os::linux 1.0 [list source [file join $dir os/linux.tcl]]
 package ifneeded tclbuild::os::windows 1.0 [list source [file join $dir os/windows.tcl]]
 package ifneeded tclbuild::profile::jim::custom 1.0 [list source [file join $dir profiles/jim-custom.tcl]]
+package ifneeded tclbuild::profile::jim::default 1.0 [list source [file join $dir profiles/jim-default.tcl]]
 package ifneeded tclbuild::profile::jim::full 1.0 [list source [file join $dir profiles/jim-full.tcl]]
-package ifneeded tclbuild::profile::jim::stock 1.0 [list source [file join $dir profiles/jim-stock.tcl]]

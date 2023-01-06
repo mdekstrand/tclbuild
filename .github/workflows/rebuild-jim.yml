@@ -1,0 +1,85 @@
+name: Rebuild JimTCL
+on:
+  push:
+    branches:
+    - main
+
+jobs:
+  linux:
+    name: Build jimtcl for linux-${{matrix.arch}}
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        arch:
+        - x86_64
+        - x86
+        - aarch64
+        - armhf
+        - armv7
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+
+    - uses: jirutka/setup-alpine@v1
+      with:
+        arch: ${{ matrix.arch }}
+        branch: v3.17
+        packages: build-base openssl tcl
+
+    - name: Build custom Jim
+      shell: alpine.sh
+      id: build-jim
+      run: |
+        tclsh build.tcl
+
+    - name: Build default Jim
+      shell: alpine.sh
+      id: build-jim-default
+      run: |
+        tclsh build.tcl -profile default
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: jimsh-${{ steps.build-jim.build-tag }}
+        path: dist/
+
+  macos:
+    name: Build jimtcl for Mac
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+
+    - name: Build custom Jim for Intel
+      shell: alpine.sh
+      id: build-jim-intel
+      run: |
+        tclsh build.tcl -arch x86_64
+
+    - name: Build custom Jim for ARM
+      shell: alpine.sh
+      id: build-jim-arm
+      run: |
+        tclsh build.tcl -arch arm64
+
+    - name: Build default Jim for Intel
+      shell: alpine.sh
+      id: build-jim-default-intel
+      run: |
+        tclsh build.tcl -profile default -arch x86_64
+
+    - name: Build default Jim for ARM
+      shell: alpine.sh
+      id: build-jim-default-arm
+      run: |
+        tclsh build.tcl -profile default -arch arm64
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: jimsh-macos
+        path: dist/

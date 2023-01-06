@@ -1,4 +1,4 @@
-package provide tclbuild::profile::jim::stock 1.0
+package provide tclbuild::profile::jim::default 1.0
 package require tclbuild::config
 
 namespace eval ::config {}

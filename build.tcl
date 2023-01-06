@@ -137,3 +137,13 @@ if {[regexp {^HMAC-SHA256\(([a-zA-Z0-9/-]+)\)=\s+([0-9a-f]+)} $sigout -> path di
 }
 
 msg -success "$distfile: $digest"
+
+if {[info exists env(GITHUB_OUTPUT)]} {
+    msg "writing build information to GitHub Actions"
+    set gho [open $env(GITHUB_OUTPUT) w]
+    puts $gho "build-tag=[config::tag]"
+    puts $gho "build-product=$product"
+    puts $gho "distdir=$distdir"
+    puts $gho "distfile=$distfile"
+    close $gho
+}
