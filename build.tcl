@@ -94,7 +94,7 @@ if {![plat::is windows]} {
         error "unexpected platform configuration"
     }
 
-    set exename "$exename-[plat::tag]"
+    set exename "$exename-[config::tag]"
 }
 
 
