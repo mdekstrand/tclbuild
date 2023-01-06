@@ -105,6 +105,7 @@ jobs:
         install: >-
           openssl
           mingw-w64-i686-gcc
+          mingw-w64-i686-make
           tcl
 
     - name: Build custom Jim for Windows
