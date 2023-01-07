@@ -31,18 +31,19 @@ getopt arg $argv {
 
     -a: - --arch:ARCH {
         # build for architecture ARCH
-        set config::arch [lshift argv]
+        set config::arch $arg
         msg -debug "cli: architecture $config::arch"
     }
     -s: - --os:OS {
         # override autodetected os to OS
-        set config::os [lshift argv]
+        set config::os $arg
         msg -debug "cli: OS $config::os"
     }
 
     -p: - --profile:NAME {
         # use build profile NAME
-        set config::profile [lshift argv]
+        set config::profile $arg
+        msg -debug "cli: profile $arg"
     }
 
     -h - --help {

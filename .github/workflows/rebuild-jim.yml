@@ -119,6 +119,12 @@ jobs:
       run: |
         tclsh build.tcl
 
+    - name: Build default Jim for Windows
+      id: build-jim
+      shell: msys2 {0}
+      run: |
+        tclsh build.tcl -p default
+
     - uses: actions/upload-artifact@v3
       with:
         name: jimsh-windows
