@@ -106,7 +106,7 @@ jobs:
         install: >-
           openssl
           mingw-w64-i686-gcc
-          mingw-w64-i686-make
+          make
           tcl
 
     - name: Dump environment info
