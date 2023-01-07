@@ -6,11 +6,7 @@
 set tbroot [file dirname [info script]]
 set tbroot [file normalize $tbroot]
 set auto_path [linsert $auto_path 0 [file join $tbroot lib]]
-if {[info exists jimsh::exe]} {
-    set auto_path [linsert $auto_path 0 [file join $tbroot common lib]]
-} else {
-    set auto_path [linsert $auto_path 0 [file join $tbroot common]]
-}
+set auto_path [linsert $auto_path 0 [file join $tbroot common lib]]
 
 package require logging
 package require platinfo
