@@ -108,6 +108,11 @@ jobs:
           mingw-w64-i686-make
           tcl
 
+    - name: Dump environment info
+      shell: msys2 {0}
+      run: |
+        tclsh envinfo.tcl
+
     - name: Build custom Jim for Windows
       id: build-jim
       shell: msys2 {0}
