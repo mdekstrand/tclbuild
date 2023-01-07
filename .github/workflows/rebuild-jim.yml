@@ -44,7 +44,7 @@ jobs:
       id: build-jim-default
       if: ${{ matrix.arch == 'x86_64' }}
       run: |
-        tclsh build.tcl -profile default
+        tclsh build.tcl -p default
 
     - uses: actions/upload-artifact@v3
       with:
