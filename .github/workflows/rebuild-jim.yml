@@ -114,13 +114,13 @@ jobs:
         tclsh envinfo.tcl
 
     - name: Build custom Jim for Windows
-      id: build-jim
+      id: build-jim-custom
       shell: msys2 {0}
       run: |
         tclsh build.tcl
 
     - name: Build default Jim for Windows
-      id: build-jim
+      id: build-jim-default
       shell: msys2 {0}
       run: |
         tclsh build.tcl -p default
