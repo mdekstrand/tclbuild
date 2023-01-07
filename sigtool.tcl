@@ -9,7 +9,7 @@ set auto_path [linsert $auto_path 0 [file join $tbroot common lib]]
 package require logging
 package require missing
 package require getopt
-package require tclbuild::keyring
+package require tclbuild::signing
 
 set options {
     force 0
@@ -61,7 +61,7 @@ if {![info exists action]} {
 
 msg "running $action"
 set rv [catch {
-    ::tclbuild::keyring::actions::$action $options
+    ::tclbuild::signing::actions::$action $options
 } msg opts]
 msg -debug "result: $rv"
 if {$rv} {

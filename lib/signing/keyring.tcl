@@ -1,4 +1,4 @@
-package provide tclbuild::keyring 1.0
+package provide tclbuild::signing 1.0
 
 array set KR_DEFAULTS {
     key_dir keys
@@ -7,10 +7,10 @@ array set KR_DEFAULTS {
     pass_len 32
 }
 
-namespace eval ::tclbuild::keyring {}
-namespace eval ::tclbuild::keyring::actions {}
+namespace eval ::tclbuild::signing {}
+namespace eval ::tclbuild::signing::actions {}
 
-proc ::tclbuild::keyring::actions::generate_password {options} {
+proc ::tclbuild::signing::actions::generate_password {options} {
     global KR_DEFAULTS
     set pass_file $KR_DEFAULTS(pass_file)
     set pass_len $KR_DEFAULTS(pass_len)
