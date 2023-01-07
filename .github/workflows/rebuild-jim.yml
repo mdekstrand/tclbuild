@@ -68,22 +68,22 @@ jobs:
     - name: Build custom Jim for Intel
       id: build-jim-intel
       run: |
-        tclsh build.tcl -arch x86_64
+        tclsh build.tcl -a x86_64
 
     - name: Build custom Jim for ARM
       id: build-jim-arm
       run: |
-        tclsh build.tcl -arch arm64
+        tclsh build.tcl -a arm64
 
     - name: Build default Jim for Intel
       id: build-jim-default-intel
       run: |
-        tclsh build.tcl -profile default -arch x86_64
+        tclsh build.tcl -p default -a x86_64
 
     - name: Build default Jim for ARM
       id: build-jim-default-arm
       run: |
-        tclsh build.tcl -profile default -arch arm64
+        tclsh build.tcl -p default -a arm64
 
     - uses: actions/upload-artifact@v3
       with:

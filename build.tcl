@@ -1,7 +1,5 @@
 #!/usr/bin/env tclsh
-# build.tcl --
-#
-#   Entry point for Michael's TCL build tools.
+# Build TCL executables.
 
 set tbroot [file dirname [info script]]
 set tbroot [file normalize $tbroot]
@@ -11,36 +9,50 @@ set auto_path [linsert $auto_path 0 [file join $tbroot common lib]]
 package require logging
 package require platinfo
 package require missing
+package require getopt
 package require tclbuild::config
 
 set fresh_build 1
 
-while {![lempty $argv]} {
-    set arg [lshift argv]
-    switch -- $arg {
-        -v { logging::configure -verbose }
-        -verbose { logging::configure -verbose }
-        -q { logging::configure -quiet }
-        -quiet { logging::configure -quiet }
+getopt arg $argv {
+    -v - --verbose {
+        # increase logging verbosity
+        logging::configure -verbose
+    }
+    -q - --quiet {
+        # only log warnings and errors
+        logging::configure -quiet
+    }
 
-        -noclean {
-            set fresh_build 0
-        }
+    --no-clean {
+        # don't clean brefore building
+        set fresh_build 0
+    }
 
-        -arch {
-            set config::arch [lshift argv]
-            msg -debug "cli: architecture $config::arch"
-        }
-        -os {
-            set config::os [lshift argv]
-            msg -debug "cli: OS $config::os"
-        }
-        -profile {
-            set config::profile [lshift argv]
-        }
+    -a: - --arch:ARCH {
+        # build for architecture ARCH
+        set config::arch [lshift argv]
+        msg -debug "cli: architecture $config::arch"
+    }
+    -s: - --os:OS {
+        # override autodetected os to OS
+        set config::os [lshift argv]
+        msg -debug "cli: OS $config::os"
+    }
 
-        default {
-            msg -err "invalid CLI option $arg"
+    -p: - --profile:NAME {
+        # use build profile NAME
+        set config::profile [lshift argv]
+    }
+
+    -h - --help {
+        # print this help and exit
+        help
+    }
+
+    arglist {
+        if {![lempty $arg]} {
+            msg -err "unrecognized arguments: $arg"
             exit 2
         }
     }
