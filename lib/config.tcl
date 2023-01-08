@@ -6,6 +6,10 @@ namespace eval config {
     variable os
     variable stack jim
     variable profile custom
+    variable layout {
+        root {}
+        dist {[repopath dist]}
+    }
 
     namespace export tag finalize
 
@@ -14,6 +18,12 @@ namespace eval config {
         variable os
 
         return "$os-$arch"
+    }
+
+    proc product {} {
+        variable stack
+        variable profile
+        return "$stack-$profile"
     }
 
     proc finalize {} {
@@ -28,6 +38,36 @@ namespace eval config {
         }
 
         msg "configured to build for [tag]"
+    }
+
+    # Resolve a path relative to the root directory.
+    proc repopath {path} {
+        variable layout
+        return [file join [dict get $layout root] $path]
+    }
+
+    proc set_path {name path} {
+        variable layout
+        dict set layout name path
+    }
+
+    proc path {req} {
+        variable layout
+        switch -- $req {
+            root {
+                return [dict get $layout root]
+            }
+            distroot {
+                return [dict with layout {subst [dict get $layout dist]}]
+            }
+            distdir {
+                set path [path distroot]
+                return [file join $path [product]]
+            }
+            default {
+                error "unknown path name $req"
+            }
+        }
     }
 }
 

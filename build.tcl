@@ -15,6 +15,11 @@ package require tclbuild::config
 set fresh_build 1
 set strip 0
 
+if {![string equal [file normalize .] $tbroot]} {
+    msg -err "must be run from tclbuild root directory"
+    exit 1
+}
+
 getopt arg $argv {
     -v - --verbose {
         # increase logging verbosity
@@ -83,11 +88,8 @@ try_require "tclbuild::profile::${config::stack}::${config::profile}" {
     exit 3
 }
 msg "$config::stack: building with profile $config::profile"
-set product "$config::stack-$config::profile"
-
-if {![info exists distdir]} {
-    set distdir "dist/$product"
-}
+set product [config::product]
+set distdir [config::path distdir]
 
 # now we are ready to go
 buildenv::configure
