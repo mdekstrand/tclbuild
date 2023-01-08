@@ -20,10 +20,12 @@ namespace eval ::tclbuild::signing {
 
 proc ::tclbuild::signing::load_systems {options} {
     global KR_DEFAULTS
-    foreach sys $::SIGN_SYSTEMS {
+    set systems [wanted_systems $options]
+    foreach sys $systems {
         package require tbs::$sys
         $sys init $KR_DEFAULTS(key_dir) tclbuild
     }
+    return $systems
 }
 
 proc ::tclbuild::signing::find_password {} {
@@ -66,6 +68,32 @@ proc ::tclbuild::signing::load_password {pass} {
     }
 }
 
+# fetch the list of wanted systems
+proc ::tclbuild::signing::wanted_systems {options} {
+    set wanted [dict get $options signers]
+    if {[lempty $wanted] || [string equal $wanted all]} {
+        msg -debug "want all signers"
+        return $::SIGN_SYSTEMS
+    } elseif {[string equal $wanted available]} {
+        set systems {}
+        foreach sys $::SIGN_SYSTEMS {
+            if {[$sys available]} {
+                msg -debug "$sys is available"
+                lappend systems $sys
+            } else {
+                msg -debug "$sys is not available"
+            }
+        }
+    } else {
+        foreach sys $wanted {
+            if {$sys ni $::SIGN_SYSTEMS} {
+                msg -err "unknown system $sys"
+            }
+        }
+        return $wanted
+    }
+}
+
 proc ::tclbuild::signing::act_generate_password {options} {
     global KR_DEFAULTS
     set pass_file $KR_DEFAULTS(pass_file)
@@ -98,9 +126,9 @@ proc ::tclbuild::signing::act_generate_password {options} {
 
 proc ::tclbuild::signing::act_generate_keys {options} {
     global KR_DEFAULTS
-    load_systems $options
+    set signers [load_systems $options]
 
-    foreach sys $::SIGN_SYSTEMS {
+    foreach sys $signers {
         array set files [$sys files]
         foreach {type file} [array get files] {
             msg -debug "checking $type file $file"
@@ -117,7 +145,7 @@ proc ::tclbuild::signing::act_generate_keys {options} {
     }
 
     set pass [find_password]
-    foreach sys $::SIGN_SYSTEMS {
+    foreach sys $signers {
         $sys gen_keys $pass
     }
 }
@@ -128,7 +156,7 @@ proc ::tclbuild::signing::act_sign_files {options args} {
 
     set pass [find_password]
     foreach file $args {
-        foreach sys $::SIGN_SYSTEMS {
+        foreach sys [wanted_systems $options] {
             $sys sign_file $pass $file
         }
     }

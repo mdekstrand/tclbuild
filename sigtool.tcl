@@ -13,6 +13,7 @@ package require tclbuild::signing
 
 set options {
     force 0
+    signers {}
 }
 
 proc action {act} {
@@ -38,7 +39,16 @@ getopt arg $argv {
     }
 
     -f - --force {
+        # force replacing existing files (dangerous)
         dict set options force 1
+    }
+
+    -s: - --signer:NAME {
+        # use signer NAME (default: all)
+        set sl [dict get $options signers]
+        lappend sl $arg
+        dict set options signers $sl
+        unset sl
     }
 
     --generate-password {
