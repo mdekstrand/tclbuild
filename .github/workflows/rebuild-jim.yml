@@ -198,7 +198,7 @@ jobs:
 
     - name: ✍️ Check signatures
       shell: alpine.sh {0}
-      id: sign-builds
+      id: verify-builds
       if: ${{ env.SIGNING_KEY_PASSWORD }}
       run: |
         # make sure those signatures we just generated work
