@@ -173,7 +173,7 @@ jobs:
       with:
         arch: x86_64
         branch: v3.17
-        packages: tcl openssl signify minisign
+        packages: tcl openssl signify minisign expect mdbook
 
     - name: 🛬 Fetch build artifacts
       uses: actions/download-artifact@v3
