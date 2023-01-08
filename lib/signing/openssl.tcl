@@ -51,8 +51,9 @@ namespace eval ::tbs::openssl {} {
     proc verify_file {file} {
         array set files [files]
 
-        msg "openssl: verifying $file"
+        msg -debug "openssl: verifying $file"
         run openssl dgst -verify $files(public) -signature "$file.rsasig" $file
+        msg -success "openssl: $file OK"
     }
 
     namespace export init files sigext available gen_keys sign_file verify_file

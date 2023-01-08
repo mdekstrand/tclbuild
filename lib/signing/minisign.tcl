@@ -50,8 +50,9 @@ namespace eval ::tbs::minisign {} {
     proc verify_file {file} {
         array set files [files]
 
-        msg "minisign: verifying $file"
-        run minisign -V -p $files(public) -m $file
+        msg -debug "minisign: verifying $file"
+        run -noout minisign -V -p $files(public) -m $file
+        msg -success "minisign: $file OK"
     }
 
     namespace export init files sigext available gen_keys sign_file verify_file

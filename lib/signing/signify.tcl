@@ -49,8 +49,9 @@ namespace eval ::tbs::signify {} {
     proc verify_file {file} {
         array set files [files]
 
-        msg "signify: verifying $file"
-        run signify -V -p $files(public) -m $file
+        msg -debug "signify: verifying $file"
+        run -noout signify -V -p $files(public) -m $file
+        msg -success "signify: $file OK"
     }
 
     namespace export init files sigext available gen_keys sign_file verify_file

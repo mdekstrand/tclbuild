@@ -36,11 +36,11 @@ namespace eval ::tbs::hmac {} {
     }
 
     proc verify_file {file} {
-        msg "hmac: locating password"
+        msg -debug "hmac: locating password"
         set pass [::tclbuild::signing::find_password]
         set pass [::tclbuild::signing::load_password $pass]
 
-        msg "hmac: loading hash file"
+        msg -debug "hmac: loading hash file"
         set fh [open "$file.mac" r]
         set saved_out [read $fh]
         set saved_out [string trim $saved_out]
@@ -51,7 +51,7 @@ namespace eval ::tbs::hmac {} {
             error "invalid saved MAC"
         }
 
-        msg "hmac: hashing $file"
+        msg -debug "hmac: hashing $file"
         set file_out [exec openssl dgst -hmac $pass -sha256 -hex $file 2>@stderr]
         set file_out [string trim $file_out]
         msg -debug $file_out
@@ -60,9 +60,9 @@ namespace eval ::tbs::hmac {} {
             error "invalid live MAC"
         }
         if {[string equal $saved_hash $file_hash]} {
-            msg "hmac: OK"
+            msg -success "hmac: $file OK"
         } else {
-            msg -err "hmac: INVALID MAC"
+            msg -err "hmac: INVALID MAC for $file"
             error "MAC verification failed"
         }
     }
