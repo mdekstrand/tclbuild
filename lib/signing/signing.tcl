@@ -165,6 +165,9 @@ proc ::tclbuild::signing::act_verify_files {options args} {
             set sigfile "$file.[$sys sigext]"
             if {[file exists $sigfile]} {
                 $sys verify_file $file
+            } elseif {[dict get $options require]} {
+                msg -err "$sys: signature $sigfile not found"
+                error "$sigfile not found"
             } else {
                 msg -warn "$sys: signature $sigfile not found"
             }

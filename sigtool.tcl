@@ -13,6 +13,7 @@ package require tclbuild::signing
 
 set options {
     force 0
+    require 0
     signers {}
 }
 
@@ -41,6 +42,10 @@ getopt arg $argv {
     -f - --force {
         # force replacing existing files (dangerous)
         dict set options force 1
+    }
+    --require {
+        # when verifying, require all requested signatures to be present
+        dict set options require 1
     }
 
     -s: - --signer:NAME {
