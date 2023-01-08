@@ -51,6 +51,11 @@ getopt arg $argv {
         unset sl
     }
 
+    --all-results {
+        # sign all results in dist/ instead of specified files
+        set paths --all-results
+    }
+
     --generate-password {
         # generate a new password to protect key-signing keys
         action generate_password
@@ -65,7 +70,14 @@ getopt arg $argv {
     }
 
     arglist {
-        set paths $arg
+        if {[info exists paths]} {
+            if {![lempty $arg]} {
+                msg -err "cannot specify paths with --all-results"
+                exit 2
+            }
+        } else {
+            set paths $arg
+        }
     }
 }
 
@@ -74,6 +86,22 @@ set env(TCLBUILD_LOG_LEVEL) [logging::verb_level]
 if {![info exists action]} {
     msg -err "no action specified"
     exit 2
+}
+
+if {[string equal $paths --all-results]} {
+    msg "scanning results in dist/"
+    set paths {}
+    foreach file [glob dist/*/*] {
+        switch -- [file extension $file] {
+            .exe - "" {
+                msg -debug "found file $file"
+                lappend paths $file
+            }
+            default {
+                msg -debug "ignoring $file"
+            }
+        }
+    }
 }
 
 msg "running $action"
