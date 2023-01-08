@@ -190,7 +190,7 @@ jobs:
 
     - name: ✍️ Sign Artifacts
       shell: alpine.sh {0}
-      id: verify-builds
+      id: sign-builds
       if: ${{ env.SIGNING_KEY_PASSWORD }}
       run: |
         tclsh sigtool.tcl --sign --all-results
