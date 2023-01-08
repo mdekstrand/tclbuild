@@ -55,7 +55,7 @@ jobs:
 
     - uses: actions/upload-artifact@v3
       with:
-        name: jimsh-${{ steps.build-jim.outputs.build-tag }}
+        name: jimsh-build
         path: dist/
 
   macos:
@@ -99,7 +99,7 @@ jobs:
 
     - uses: actions/upload-artifact@v3
       with:
-        name: jimsh-macos
+        name: jimsh-build
         path: dist/
 
   windows:
@@ -147,5 +147,36 @@ jobs:
 
     - uses: actions/upload-artifact@v3
       with:
-        name: jimsh-windows
+        name: jimsh-build
         path: dist/
+
+  publish:
+    name: Sign and publish results
+    runs-on: ubuntu-latest
+    needs:
+    - linux
+    - macos
+    - windows
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+
+    # we use Alpine for ease in getting required packages
+    - uses: jirutka/setup-alpine@v1
+      with:
+        arch: x86_64
+        branch: v3.17
+        packages: tcl openssl signify minisign
+
+    - uses: actions/download-artifact@v3
+      with:
+        name: jimsh-build
+        path: dist
+
+    - name: Verify artifact HMACs
+      shell: alpine.sh {0}
+      id: verify-builds
+      run: |
+        tclsh sigtool.tcl --verify --require -s hmac --all-results
