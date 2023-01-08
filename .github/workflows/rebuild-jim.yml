@@ -208,4 +208,22 @@ jobs:
       shell: alpine.sh {0}
       id: hash-builds
       run: |
-        tclsh disttool.tcl --checksum -A
+        tclsh disttool.tcl --checksum --all
+
+    - name: 🪵 Generate distribution manifests
+      shell: alpine.sh {0}
+      run: |
+        tclsh disttool.tcl --manifest --all
+
+    - name: 📇 Generate documentation site
+      shell: alpine.sh {0}
+      run: mdbook build
+
+    - name: 🚛 Copy distribution files
+      shell: alpine.sh {0}
+      run: rsync -rv dist/ site/dist/
+
+    - name: 📤 Deploy site
+      if: ${{ env.NETLIFY_AUTH_TOKEN }}
+      env:
+        NETLIFY_SITE_ID: 5dff77d2-34d5-4a8a-b9bd-b9464b0d88fc
