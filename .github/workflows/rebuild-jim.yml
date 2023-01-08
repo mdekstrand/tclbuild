@@ -48,11 +48,10 @@ jobs:
 
     - name: Sign build artifacts
       shell: alpine.sh {0}
-      if: ${{ secrets.SIGNING_KEY_PASSWORD }}
       env:
         SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
       run: |
-        tclsh sigtool.tcl --sign -s hmac --all-results
+        test -n "$SIGNING_KEY_PASSWORD" && tclsh sigtool.tcl --sign -s hmac --all-results
 
     - uses: actions/upload-artifact@v3
       with:
@@ -93,11 +92,10 @@ jobs:
         tclsh build.tcl -p default -a arm64
 
     - name: Sign build artifacts
-      if: ${{ secrets.SIGNING_KEY_PASSWORD }}
       env:
         SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
       run: |
-        tclsh sigtool.tcl --sign -s hmac --all-results
+        test -n "$SIGNING_KEY_PASSWORD" && tclsh sigtool.tcl --sign -s hmac --all-results
 
     - uses: actions/upload-artifact@v3
       with:
@@ -142,11 +140,10 @@ jobs:
 
     - name: Sign build artifacts
       shell: msys2 {0}
-      if: ${{ secrets.SIGNING_KEY_PASSWORD }}
       env:
         SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
       run: |
-        tclsh sigtool.tcl --sign -s hmac --all-results
+        test -n "$SIGNING_KEY_PASSWORD" && tclsh sigtool.tcl --sign -s hmac --all-results
 
     - uses: actions/upload-artifact@v3
       with:
