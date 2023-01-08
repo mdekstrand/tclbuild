@@ -45,6 +45,10 @@ getopt arg $argv {
         # generate a new password to protect key-signing keys
         action generate_password
     }
+    --generate-keys {
+        # generate new sets of signing keys
+        action generate_keys
+    }
 
     arglist {
         if {![lempty $arg]} {
@@ -61,10 +65,11 @@ if {![info exists action]} {
 
 msg "running $action"
 set rv [catch {
-    ::tclbuild::signing::actions::$action $options
+    ::tclbuild::signing::act_$action $options
 } msg opts]
 msg -debug "result: $rv"
 if {$rv} {
     msg -err "command $action failed: $msg"
+    msg -debug [dict get $opts -errorinfo]
     exit 3
 }

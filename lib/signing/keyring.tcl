@@ -6,11 +6,37 @@ array set KR_DEFAULTS {
     pass_file keys/keyprotect.pass
     pass_len 32
 }
+set SIGN_SYSTEMS {
+    openssl
+}
 
-namespace eval ::tclbuild::signing {}
-namespace eval ::tclbuild::signing::actions {}
+namespace eval ::tbs {}
+namespace eval ::tclbuild::signing {
+}
 
-proc ::tclbuild::signing::actions::generate_password {options} {
+proc ::tclbuild::signing::load_systems {} {
+    foreach sys $::SIGN_SYSTEMS {
+        package require tbs::$sys
+    }
+}
+
+proc ::tclbuild::signing::find_password {} {
+    global KR_DEFAULTS
+
+    msg -debug "checking for password file"
+    if {[file exists $KR_DEFAULTS(pass_file)]} {
+        return "file:$KR_DEFAULTS(pass_file)"
+    }
+
+    msg -debug "checking for environment variable $KR_DEFAULTS(pass_ev)"
+    if {[info exists $::env($KR_DEFAULTS(pass_ev))]} {
+        return "env:$KR_DEFAULTS(pass_ev)"
+    }
+
+    error -code {TCLBUILD SIGN NOPASSWORD} "could not find password source"
+}
+
+proc ::tclbuild::signing::act_generate_password {options} {
     global KR_DEFAULTS
     set pass_file $KR_DEFAULTS(pass_file)
     set pass_len $KR_DEFAULTS(pass_len)
@@ -38,4 +64,25 @@ proc ::tclbuild::signing::actions::generate_password {options} {
     set fp [open $pass_file w]
     puts $fp $pass
     close $fp
+}
+
+proc ::tclbuild::signing::act_generate_keys {options} {
+    global KR_DEFAULTS
+    set abort 0
+    load_systems
+
+    foreach sys $::SIGN_SYSTEMS {
+        if {[::tbs::${sys}::keyfiles_exist $KR_DEFAULTS(key_dir) tclbuild]} {
+            msg -warn "key files for $sys exist"
+            set abort 1
+        }
+    }
+    if {$abort && ![dict get $options force]} {
+        error "key files already exist, not regenerating"
+    }
+
+    set pass [find_password]
+    foreach sys $::SIGN_SYSTEMS {
+        ::tbs::${sys}::gen_keys $KR_DEFAULTS(key_dir) tclbuild $pass
+    }
 }
