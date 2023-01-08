@@ -51,7 +51,7 @@ jobs:
       run: |
         tclsh sigtool.tcl --sign dist/jim-*/jimsh-*
       env:
-        SIGNING_KEY_PASSWORDO: ${{ secrets.SIGNING_KEY_PASSWORD }}
+        SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
 
     - uses: actions/upload-artifact@v3
       with:
