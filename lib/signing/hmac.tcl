@@ -35,6 +35,38 @@ namespace eval ::tbs::hmac {} {
         run openssl dgst -hmac $pass -sha256 -hex -out "$file.mac" $file
     }
 
-    namespace export init files sigext available gen_keys sign_file
+    proc verify_file {file} {
+        msg "hmac: locating password"
+        set pass [::tclbuild::signing::find_password]
+        set pass [::tclbuild::signing::load_password $pass]
+
+        msg "hmac: loading hash file"
+        set fh [open "$file.mac" r]
+        set saved_out [read $fh]
+        set saved_out [string trim $saved_out]
+        close $fh
+        msg -debug $saved_out
+        if {![regexp {HMAC-SHA2(?:-2)?56\(.+\)= ([0-9a-f]+)} $saved_out -> saved_hash]} {
+            msg -err "cannot parse saved MAC"
+            error "invalid saved MAC"
+        }
+
+        msg "hmac: hashing $file"
+        set file_out [exec openssl dgst -hmac $pass -sha256 -hex $file 2>@stderr]
+        set file_out [string trim $file_out]
+        msg -debug $file_out
+        if {![regexp {HMAC-SHA2(?:-2)?56\(.+\)= ([0-9a-f]+)} $file_out -> file_hash]} {
+            msg -err "cannot parse MAC"
+            error "invalid live MAC"
+        }
+        if {[string equal $saved_hash $file_hash]} {
+            msg "hmac: OK"
+        } else {
+            msg -err "hmac: INVALID MAC"
+            error "MAC verification failed"
+        }
+    }
+
+    namespace export init files sigext available gen_keys sign_file verify_file
     namespace ensemble create -command ::tclbuild::signing::hmac
 }
