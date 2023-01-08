@@ -25,3 +25,13 @@ expect {
         exp_continue
     }
 }
+
+set result [wait]
+msg -debug "process [lindex $result 0] finished"
+if {[lindex $result 2] < 0} {
+    msg -err "could not execute subprocess"
+    exit 5
+} elseif {[set rc [lindex $result 3]]} {
+    msg -err "[lindex $argv 0] exited with code $rc"
+    exit 3
+}
