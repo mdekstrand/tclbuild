@@ -21,4 +21,4 @@ package ifneeded tclbuild::os::windows 1.0 [list source [file join $dir os/windo
 package ifneeded tclbuild::profile::jim::custom 1.0 [list source [file join $dir profiles/jim-custom.tcl]]
 package ifneeded tclbuild::profile::jim::default 1.0 [list source [file join $dir profiles/jim-default.tcl]]
 package ifneeded tclbuild::profile::jim::full 1.0 [list source [file join $dir profiles/jim-full.tcl]]
-package ifneeded tclbuild::signing 1.0 [list source [file join $dir signing/keyring.tcl]]
+package ifneeded tclbuild::signing 1.0 [list source [file join $dir signing/signing.tcl]]
