@@ -46,6 +46,13 @@ jobs:
       run: |
         tclsh build.tcl -p default
 
+    - name: Sign compiled files
+      id: sign-jim
+      run: |
+        tclsh sigtool.tcl --sign dist/jim-*/jimsh-*
+      env:
+        SIGNING_KEY_PASSWORDO: ${{ secrets.SIGNING_KEY_PASSWORD }}
+
     - uses: actions/upload-artifact@v3
       with:
         name: jimsh-${{ steps.build-jim.outputs.build-tag }}
