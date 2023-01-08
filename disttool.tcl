@@ -42,7 +42,7 @@ getopt arg $argv {
         msg -info "cli: dist root $arg"
         config::set_path distroot $arg
     }
-    --all-products {
+    -A - --all-products {
         # operate on all products
         set products --all
     }

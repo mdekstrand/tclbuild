@@ -173,7 +173,7 @@ jobs:
       with:
         arch: x86_64
         branch: v3.17
-        packages: tcl openssl signify minisign expect mdbook
+        packages: tcl openssl signify minisign expect mdbook coreutils
 
     - name: 🛬 Fetch build artifacts
       uses: actions/download-artifact@v3
@@ -188,9 +188,15 @@ jobs:
       run: |
         tclsh sigtool.tcl --verify --require -s hmac --all-results
 
-    - name: ✍️ Sign Artifacts
+    - name: ✍️ Sign artifacts
       shell: alpine.sh {0}
       id: sign-builds
       if: ${{ env.SIGNING_KEY_PASSWORD }}
       run: |
-        tclsh sigtool.tcl --sign --all-results
+        tclsh sigtool.tcl --sign -A
+
+    - name: 🧇 Generate distribution hashes
+      shell: alpine.sh {0}
+      id: hash-builds
+      run: |
+        tclsh disttool.tcl --checksum -A

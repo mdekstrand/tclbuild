@@ -63,7 +63,7 @@ getopt arg $argv {
         config::set_path distroot $arg
     }
 
-    --all-results {
+    -A - --all-results {
         # sign all results in dist/ instead of specified files
         set paths --all
     }
