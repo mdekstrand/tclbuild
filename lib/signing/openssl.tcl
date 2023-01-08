@@ -2,15 +2,22 @@ package provide tbs::openssl 1.0
 package require runprog
 
 namespace eval ::tbs::openssl {} {
-    proc files {dir name} {
+    proc init {dir name} {
+        variable key_dir $dir
+        variable key_name $name
+    }
+
+    proc files {} {
+        variable key_dir
+        variable key_name
         return [subst {
-            secret [file join $dir "$name.openssl.sec"]
-            public [file join $dir "$name.openssl.pub"]
+            secret [file join $key_dir "$key_name.openssl.sec"]
+            public [file join $key_dir "$key_name.openssl.pub"]
         }]
     }
 
-    proc gen_keys {dir name pass} {
-        array set files [files $dir $name]
+    proc gen_keys {pass} {
+        array set files [files]
 
         msg "openssl: generating private key"
         run openssl req -newkey rsa -subj /CN=tclbuild.ekstrandom.net \
@@ -18,6 +25,13 @@ namespace eval ::tbs::openssl {} {
             -x509 -out $files(public)
     }
 
-    namespace export files gen_keys
+    proc sign_file {pass file} {
+        array set files [files]
+
+        msg "openssl: signing $file"
+        run openssl dgst -sign $files(secret) -passin $pass -sha256 -out "$file.rsasig" $file
+    }
+
+    namespace export init files gen_keys sign_file
     namespace ensemble create -command ::tclbuild::signing::openssl
 }

@@ -16,9 +16,11 @@ namespace eval ::tclbuild::signing {
     namespace export load_password find_password
 }
 
-proc ::tclbuild::signing::load_systems {} {
+proc ::tclbuild::signing::load_systems {options} {
+    global KR_DEFAULTS
     foreach sys $::SIGN_SYSTEMS {
         package require tbs::$sys
+        $sys init $KR_DEFAULTS(key_dir) tclbuild
     }
 }
 
@@ -91,11 +93,10 @@ proc ::tclbuild::signing::act_generate_password {options} {
 
 proc ::tclbuild::signing::act_generate_keys {options} {
     global KR_DEFAULTS
-    set abort 0
-    load_systems
+    load_systems $options
 
     foreach sys $::SIGN_SYSTEMS {
-        array set files [$sys files $KR_DEFAULTS(key_dir) tclbuild]
+        array set files [$sys files]
         foreach {type file} [array get files] {
             msg -debug "checking $type file $file"
             if {[file exists $file]} {
@@ -112,6 +113,18 @@ proc ::tclbuild::signing::act_generate_keys {options} {
 
     set pass [find_password]
     foreach sys $::SIGN_SYSTEMS {
-        $sys gen_keys $KR_DEFAULTS(key_dir) tclbuild $pass
+        $sys gen_keys $pass
+    }
+}
+
+proc ::tclbuild::signing::act_sign_files {options args} {
+    global KR_DEFAULTS
+    load_systems $options
+
+    set pass [find_password]
+    foreach file $args {
+        foreach sys $::SIGN_SYSTEMS {
+            $sys sign_file $pass $file
+        }
     }
 }

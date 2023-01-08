@@ -49,12 +49,13 @@ getopt arg $argv {
         # generate new sets of signing keys
         action generate_keys
     }
+    --sign {
+        # generate signatures for files
+        action sign_files
+    }
 
     arglist {
-        if {![lempty $arg]} {
-            msg -err "unrecognized arguments: $arg"
-            exit 2
-        }
+        set paths $arg
     }
 }
 
@@ -67,9 +68,9 @@ if {![info exists action]} {
 
 msg "running $action"
 set rv [catch {
-    ::tclbuild::signing::act_$action $options
+    ::tclbuild::signing::act_$action $options {*}$paths
 } msg opts]
-msg -debug "result: $rv"
+msg -debug "tcl command result: $rv"
 if {$rv} {
     msg -err "command $action failed: $msg"
     msg -debug [dict get $opts -errorinfo]
