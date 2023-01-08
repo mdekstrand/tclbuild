@@ -34,7 +34,7 @@ proc ::tclbuild::signing::find_password {} {
     }
 
     msg -debug "checking for environment variable $KR_DEFAULTS(pass_ev)"
-    if {[info exists $::env($KR_DEFAULTS(pass_ev))]} {
+    if {[info exists ::env($KR_DEFAULTS(pass_ev))]} {
         return "env:$KR_DEFAULTS(pass_ev)"
     }
 
