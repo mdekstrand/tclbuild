@@ -158,27 +158,39 @@ jobs:
     - macos
     - windows
 
+    env:
+      SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+
     steps:
-    - uses: actions/checkout@v3
+    - name: 🛒 Check out source
+      uses: actions/checkout@v3
       with:
         submodules: recursive
 
     # we use Alpine for ease in getting required packages
-    - uses: jirutka/setup-alpine@v1
+    - name: ⛷️ Set up Alpine environment
+      uses: jirutka/setup-alpine@v1
       with:
         arch: x86_64
         branch: v3.17
         packages: tcl openssl signify minisign
 
-    - uses: actions/download-artifact@v3
+    - name: 🛬 Fetch build artifacts
+      uses: actions/download-artifact@v3
       with:
         name: jimsh-build
         path: dist
 
-    - name: Verify artifact HMACs
+    - name: ✔️ Verify artifact HMACs
       shell: alpine.sh {0}
       id: verify-builds
-      env:
-        SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+      if: ${{ env.SIGNING_KEY_PASSWORD }}
       run: |
-        test -n "$SIGNING_KEY_PASSWORD" && tclsh sigtool.tcl --verify --require -s hmac --all-results
+        tclsh sigtool.tcl --verify --require -s hmac --all-results
+
+    - name: ✍️ Sign Artifacts
+      shell: alpine.sh {0}
+      id: verify-builds
+      if: ${{ env.SIGNING_KEY_PASSWORD }}
+      run: |
+        tclsh sigtool.tcl --sign --all-results
