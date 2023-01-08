@@ -16,7 +16,8 @@ spawn {*}$argv
 expect {
     -re "(confirm\\s+)?password:" {
         msg -debug "sending password"
-        puts $password
+        send "$password\r"
+        exp_continue
     }
     -re "Password.*:" {
         msg -debug "sending password"

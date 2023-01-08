@@ -45,12 +45,15 @@ proc ::tclbuild::signing::load_password {pass} {
     if {[regexp {^([a-z]+):(.*)} $pass -> src spec]} {
         switch -- $src {
             file {
+                msg -debug "reading password file $spec"
                 set fp [open $spec r]
                 set val [read $fp]
                 close $fp
+                return $val
             }
             env {
-                set val $::env($spec)
+                msg -debug "reading password env $spec"
+                return $::env($spec)
             }
             default {
                 error "unsupported password source $src"
