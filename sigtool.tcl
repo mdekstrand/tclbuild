@@ -58,6 +58,8 @@ getopt arg $argv {
     }
 }
 
+set env(TCLBUILD_LOG_LEVEL) [logging::verb_level]
+
 if {![info exists action]} {
     msg -err "no action specified"
     exit 2

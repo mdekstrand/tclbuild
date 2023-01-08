@@ -8,6 +8,7 @@
 # script is sourced, the variable $dir must contain the
 # full path name of this file's directory.
 
+package ifneeded tbs::minisign 1.0 [list source [file join $dir signing/minisign.tcl]]
 package ifneeded tbs::openssl 1.0 [list source [file join $dir signing/openssl.tcl]]
 package ifneeded tclbuild::build::jim 1.0 [list source [file join $dir build-jim.tcl]]
 package ifneeded tclbuild::buildenv 1.0 [list source [file join $dir buildenv.tcl]]

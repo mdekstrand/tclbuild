@@ -8,10 +8,12 @@ array set KR_DEFAULTS {
 }
 set SIGN_SYSTEMS {
     openssl
+    minisign
 }
 
 namespace eval ::tbs {}
 namespace eval ::tclbuild::signing {
+    namespace export load_password find_password
 }
 
 proc ::tclbuild::signing::load_systems {} {
@@ -34,6 +36,27 @@ proc ::tclbuild::signing::find_password {} {
     }
 
     error -code {TCLBUILD SIGN NOPASSWORD} "could not find password source"
+}
+
+proc ::tclbuild::signing::load_password {pass} {
+    # load a password from an OpenSSL-compatible spec
+    if {[regexp {^([a-z]+):(.*)} $pass -> src spec]} {
+        switch -- $src {
+            file {
+                set fp [open $spec r]
+                set val [read $fp]
+                close $fp
+            }
+            env {
+                set val $::env($spec)
+            }
+            default {
+                error "unsupported password source $src"
+            }
+        }
+    } else {
+        error "unexpected password format $pass"
+    }
 }
 
 proc ::tclbuild::signing::act_generate_password {options} {
@@ -72,13 +95,19 @@ proc ::tclbuild::signing::act_generate_keys {options} {
     load_systems
 
     foreach sys $::SIGN_SYSTEMS {
-        if {[$sys keyfiles_exist $KR_DEFAULTS(key_dir) tclbuild]} {
-            msg -warn "key files for $sys exist"
-            set abort 1
+        array set files [$sys files $KR_DEFAULTS(key_dir) tclbuild]
+        foreach {type file} [array get files] {
+            msg -debug "checking $type file $file"
+            if {[file exists $file]} {
+                if {[dict get $options force]} {
+                    msg -warn "removing $type file $file"
+                    file delete $file
+                } else {
+                    msg -error "$type file $file exists, aborting"
+                    error "won't replace key files without --force"
+                }
+            }
         }
-    }
-    if {$abort && ![dict get $options force]} {
-        error "key files already exist, not regenerating"
     }
 
     set pass [find_password]

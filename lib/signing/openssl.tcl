@@ -9,20 +9,6 @@ namespace eval ::tbs::openssl {} {
         }]
     }
 
-    proc keyfiles_exist {dir name} {
-        array set files [files $dir $name]
-        set exists {}
-        foreach ftype [array names files] {
-            set file $files($ftype)
-            msg -debug "checking $ftype file $file"
-            if {[file exists $file]} {
-                msg -debug "found $ftype file $file"
-                lappend exists $ftype
-            }
-        }
-        return [expr [llength $exists] > 0]
-    }
-
     proc gen_keys {dir name pass} {
         array set files [files $dir $name]
 
@@ -32,6 +18,6 @@ namespace eval ::tbs::openssl {} {
             -x509 -out $files(public)
     }
 
-    namespace export keyfiles_exist gen_keys
+    namespace export files gen_keys
     namespace ensemble create -command ::tclbuild::signing::openssl
 }
