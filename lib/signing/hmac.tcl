@@ -61,9 +61,10 @@ namespace eval ::tbs::hmac {} {
         }
         if {[string equal $saved_hash $file_hash]} {
             msg -success "hmac: $file OK"
+            return 1
         } else {
-            msg -err "hmac: INVALID MAC for $file"
-            error "MAC verification failed"
+            msg -err "hmac: $file: INVALID MAC"
+            return 0
         }
     }
 

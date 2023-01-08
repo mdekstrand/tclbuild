@@ -51,8 +51,14 @@ namespace eval ::tbs::minisign {} {
         array set files [files]
 
         msg -debug "minisign: verifying $file"
-        run -noout minisign -V -p $files(public) -m $file
-        msg -success "minisign: $file OK"
+        set rc [run -noout -retfail minisign -V -p $files(public) -m $file]
+        if {$rc} {
+            msg -err "minisign: $file VERIFICATION FAILED"
+            return 0
+        } else {
+            msg -success "minisign: $file OK"
+            return 1
+        }
     }
 
     namespace export init files sigext available gen_keys sign_file verify_file

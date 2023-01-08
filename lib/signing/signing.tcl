@@ -160,17 +160,27 @@ proc ::tclbuild::signing::act_verify_files {options args} {
     global KR_DEFAULTS
     load_systems $options
 
+    array set bad {}
     foreach file $args {
         foreach sys [wanted_systems $options] {
             set sigfile "$file.[$sys sigext]"
             if {[file exists $sigfile]} {
-                $sys verify_file $file
+                if {![$sys verify_file $file]} {
+                    set bad($file) bad-sig
+                }
             } elseif {[dict get $options require]} {
                 msg -err "$sys: signature $sigfile not found"
-                error "$sigfile not found"
+                set bad($file) no-sig
             } else {
                 msg -warn "$sys: signature $sigfile not found"
             }
         }
+    }
+
+    set nbad [llength [array names bad]]
+    if {$nbad > 0} {
+        error "$nbad files failed"
+    } else {
+        msg -success "all files OK"
     }
 }

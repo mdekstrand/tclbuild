@@ -9,7 +9,9 @@ set auto_path [linsert $auto_path 0 [file join $tbroot common lib]]
 package require logging
 package require missing
 package require getopt
+package require tclbuild::config
 package require tclbuild::signing
+package require tclbuild::distrepo
 
 set options {
     force 0
@@ -55,6 +57,11 @@ getopt arg $argv {
         dict set options signers $sl
         unset sl
     }
+    -d: - --dist-dir:DIR {
+        # look for distributions in DIR instead of dist/
+        msg -info "cli: dist root $arg"
+        config::set_path distroot $arg
+    }
 
     --all-results {
         # sign all results in dist/ instead of specified files
@@ -91,6 +98,10 @@ getopt arg $argv {
 }
 
 set env(TCLBUILD_LOG_LEVEL) [logging::verb_level]
+if {![string equal [file normalize .] $tbroot]} {
+    msg -info "tclbuild root: $tbroot"
+    config::set_path root $tbroot
+}
 
 if {![info exists action]} {
     msg -err "no action specified"
@@ -98,19 +109,7 @@ if {![info exists action]} {
 }
 
 if {[string equal $paths --all-results]} {
-    msg "scanning results in dist/"
-    set paths {}
-    foreach file [glob dist/*/*] {
-        switch -- [file extension $file] {
-            .exe - "" {
-                msg -debug "found file $file"
-                lappend paths $file
-            }
-            default {
-                msg -debug "ignoring $file"
-            }
-        }
-    }
+    set paths [tclbuild::dist::built_outputs]
 }
 
 msg "running $action"

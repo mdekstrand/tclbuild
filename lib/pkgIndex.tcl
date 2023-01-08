@@ -15,6 +15,7 @@ package ifneeded tbs::signify 1.0 [list source [file join $dir signing/signify.t
 package ifneeded tclbuild::build::jim 1.0 [list source [file join $dir build-jim.tcl]]
 package ifneeded tclbuild::buildenv 1.0 [list source [file join $dir buildenv.tcl]]
 package ifneeded tclbuild::config 1.0 [list source [file join $dir config.tcl]]
+package ifneeded tclbuild::distrepo 1.0 [list source [file join $dir distrepo.tcl]]
 package ifneeded tclbuild::os::darwin 1.0 [list source [file join $dir os/darwin.tcl]]
 package ifneeded tclbuild::os::linux 1.0 [list source [file join $dir os/linux.tcl]]
 package ifneeded tclbuild::os::windows 1.0 [list source [file join $dir os/windows.tcl]]

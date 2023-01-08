@@ -52,8 +52,14 @@ namespace eval ::tbs::openssl {} {
         array set files [files]
 
         msg -debug "openssl: verifying $file"
-        run openssl dgst -verify $files(public) -signature "$file.rsasig" $file
-        msg -success "openssl: $file OK"
+        set rc [run -noout -retfail openssl dgst -verify $files(public) -signature "$file.rsasig" $file]
+        if {$rc} {
+            msg -err "openssl: $file VERIFICATION FAILED"
+            return 0
+        } else {
+            msg -success "openssl: $file OK"
+            return 1
+        }
     }
 
     namespace export init files sigext available gen_keys sign_file verify_file

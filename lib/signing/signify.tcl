@@ -50,8 +50,14 @@ namespace eval ::tbs::signify {} {
         array set files [files]
 
         msg -debug "signify: verifying $file"
-        run -noout signify -V -p $files(public) -m $file
-        msg -success "signify: $file OK"
+        set rc [run -noout -retfail signify -V -q -p $files(public) -m $file]
+        if {$rc} {
+            msg -err "signify: $file VERIFICATION FAILED"
+            return 0
+        } else {
+            msg -success "signify: $file OK"
+            return 1
+        }
     }
 
     namespace export init files sigext available gen_keys sign_file verify_file
