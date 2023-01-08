@@ -202,7 +202,7 @@ jobs:
       if: ${{ env.SIGNING_KEY_PASSWORD }}
       run: |
         # make sure those signatures we just generated work
-        tclsh sigtool.tcl --sign -A --require
+        tclsh sigtool.tcl --verify -A --require
 
     - name: 🧇 Generate distribution hashes
       shell: alpine.sh {0}
@@ -220,7 +220,6 @@ jobs:
       run: mdbook build
 
     - name: 🚛 Copy distribution files
-      shell: alpine.sh {0}
       run: rsync -rv dist/ site/dist/
 
     - name: 📤 Deploy site
