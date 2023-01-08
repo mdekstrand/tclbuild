@@ -195,6 +195,14 @@ jobs:
       run: |
         tclsh sigtool.tcl --sign -A
 
+    - name: ✍️ Check signatures
+      shell: alpine.sh {0}
+      id: sign-builds
+      if: ${{ env.SIGNING_KEY_PASSWORD }}
+      run: |
+        # make sure those signatures we just generated work
+        tclsh sigtool.tcl --sign -A --require
+
     - name: 🧇 Generate distribution hashes
       shell: alpine.sh {0}
       id: hash-builds
