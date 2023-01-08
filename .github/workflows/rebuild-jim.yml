@@ -178,5 +178,7 @@ jobs:
     - name: Verify artifact HMACs
       shell: alpine.sh {0}
       id: verify-builds
+      env:
+        SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
       run: |
-        tclsh sigtool.tcl --verify --require -s hmac --all-results
+        test -n "$SIGNING_KEY_PASSWORD" && tclsh sigtool.tcl --verify --require -s hmac --all-results
