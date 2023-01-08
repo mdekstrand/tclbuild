@@ -36,9 +36,9 @@ namespace eval ::tbs::openssl {} {
         array set files [files]
 
         msg "openssl: generating private key"
-        run openssl req -newkey rsa -subj /CN=tclbuild.ekstrandom.net \
-            -passout $pass -keyout $files(secret) \
-            -x509 -out $files(public)
+        run openssl genrsa -passout $pass -out $files(secret)
+        msg "openssl: extracting public key"
+        run openssl pkey -in $files(secret) -passin $pass -pubout -out $files(public)
     }
 
     proc sign_file {pass file} {
