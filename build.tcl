@@ -89,7 +89,7 @@ try_require "tclbuild::profile::${config::stack}::${config::profile}" {
 }
 msg "$config::stack: building with profile $config::profile"
 set product [config::product]
-set distdir [config::path distdir]
+set distdir [config::path distdir $product]
 
 # now we are ready to go
 buildenv::configure
