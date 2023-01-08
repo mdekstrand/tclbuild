@@ -40,7 +40,7 @@ proc ::tclbuild::signing::find_password {} {
         return "env:$KR_DEFAULTS(pass_ev)"
     }
 
-    error -code {TCLBUILD SIGN NOPASSWORD} "could not find password source"
+    error "could not find password source"
 }
 
 proc ::tclbuild::signing::load_password {pass} {
