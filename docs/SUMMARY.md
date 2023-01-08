@@ -2,7 +2,8 @@
 
 
 
-## TCL Builds
+## TCL builds
 
-- [Jim (default)](jim-default.md)
-- [Jim (custom)](jim-custom.md)
+- [Verification Keys](keys.md)
+- [Jim (default)](dist/jim-default/index.md)
+- [Jim (custom)](dist/jim-custom/index.md)

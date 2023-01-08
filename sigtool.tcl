@@ -109,7 +109,7 @@ if {![info exists action]} {
 }
 
 if {[string equal $paths --all]} {
-    set paths [tclbuild::dist::built_outputs]
+    set paths [tclbuild::dist::build_outputs]
 }
 
 msg "running $action"

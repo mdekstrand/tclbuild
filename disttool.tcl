@@ -51,6 +51,10 @@ getopt arg $argv {
         # compute checksums for distribution files
         action checksum
     }
+    --manifest {
+        # prepare distribution manifests for the product
+        action manifest
+    }
 
     arglist {
         if {[info exists products]} {

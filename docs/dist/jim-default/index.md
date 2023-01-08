@@ -1,17 +1,12 @@
 # Jim Tcl (default configuration)
 
-[jim]: http://jim.tcl.tk
-[license]: http://jim.tcl.tk/index.html/doc/www/www/license/
+These are builds of [Jim Tcl](http://jim.tcl.tk) in its default configuration.
 
-These are builds of [Jim Tcl][jim] using a custom configuration that only
-contains the extensions I need for my shell environment configurations.
-
-{{#include jim-custom-manifest.md}}
+{{#include manifest.md}}
 
 ## License
 
-Jim is provided under a [2-clause BSD license][license], and binary builds are
-distributed here in accordance with its terms:
+Jim is provided under a [2-clause BSD license](http://jim.tcl.tk/index.html/doc/www/www/license/), and binary builds are distributed here in accordance with its terms:
 
 > Jim - A small embeddable Tcl interpreter
 >

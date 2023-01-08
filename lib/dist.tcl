@@ -18,7 +18,7 @@ namespace eval ::tclbuild::dist {
     }
 
     # list results that have been built.
-    proc built_outputs {{product -all}} {
+    proc build_outputs {{product -all}} {
         set dist [config::path distroot]
         msg -debug "scanning for products in $dist"
         if {[string equal $product -all]} {
@@ -60,4 +60,65 @@ proc ::tclbuild::dist::act_checksum {product} {
     set files [glob -directory $dist -tails *]
     msg -info "checksumming [llength $files] files for $product"
     run -cwd $dist -outfile shasums sha256sum --binary {*}$files
+}
+
+proc ::tclbuild::dist::build_groups {product} {
+    set files [build_outputs $product]
+
+    set groups [dict create]
+
+    foreach file [lsort $files] {
+        msg -debug "grouping file $file"
+        set file [file tail $file]
+        switch -regexp -matchvar match -- $file {
+            ^.*\\.exe$ {
+                dict lappend groups windows x86 $file
+            }
+            ^\\w+-(\\w+)-(.*) {
+                set os [lindex $match 1]
+                set arch [lindex $match 2]
+                dict lappend groups $os $arch $file
+            }
+            default {
+                msg -warn "unmatched prodcut $file"
+            }
+        }
+    }
+
+    return $groups
+}
+
+proc ::tclbuild::dist::act_manifest {product} {
+    set dist [config::path distdir $product]
+    set shafile [file join $dist shasums]
+    set md_file [file join docs $dist manifest.md]
+    set txt_file [file join $dist manifest.txt]
+
+    set platforms [build_groups $product]
+    set plat_labels {
+        windows Windows
+        darwin macOS
+        linux Linux
+    }
+
+    set mdh [open $md_file w]
+    dict for {os builds} $platforms {
+        msg "building manifest for $os"
+        if {[dict exists $plat_labels $os]} {
+            set os [dict get $plat_labels $os]
+        }
+
+        puts $mdh "## $os\n"
+        dict for {arch file} $builds {
+            set sigs {}
+            lappend sigs [subst -nocommands {[[minisign]($file.minisig)]}]
+            lappend sigs [subst -nocommands {[[signify]($file.sig)]}]
+            lappend sigs [subst -nocommands {[[RSA (openssl)]($file.rsasig)]}]
+
+            puts $mdh "- \[`$file`\]($file) [join $sigs { }]"
+        }
+        puts $mdh ""
+    }
+
+    close $mdh
 }
