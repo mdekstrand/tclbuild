@@ -72,7 +72,7 @@ proc ::tclbuild::signing::act_generate_keys {options} {
     load_systems
 
     foreach sys $::SIGN_SYSTEMS {
-        if {[::tbs::${sys}::keyfiles_exist $KR_DEFAULTS(key_dir) tclbuild]} {
+        if {[$sys keyfiles_exist $KR_DEFAULTS(key_dir) tclbuild]} {
             msg -warn "key files for $sys exist"
             set abort 1
         }
@@ -83,6 +83,6 @@ proc ::tclbuild::signing::act_generate_keys {options} {
 
     set pass [find_password]
     foreach sys $::SIGN_SYSTEMS {
-        ::tbs::${sys}::gen_keys $KR_DEFAULTS(key_dir) tclbuild $pass
+        $sys gen_keys $KR_DEFAULTS(key_dir) tclbuild $pass
     }
 }

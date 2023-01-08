@@ -31,4 +31,7 @@ namespace eval ::tbs::openssl {} {
             -passout $pass -keyout $files(secret) \
             -x509 -out $files(public)
     }
+
+    namespace export keyfiles_exist gen_keys
+    namespace ensemble create -command ::tclbuild::signing::openssl
 }
