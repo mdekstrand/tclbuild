@@ -8,6 +8,7 @@
 # script is sourced, the variable $dir must contain the
 # full path name of this file's directory.
 
+package ifneeded tbs::hmac 1.0 [list source [file join $dir signing/hmac.tcl]]
 package ifneeded tbs::minisign 1.0 [list source [file join $dir signing/minisign.tcl]]
 package ifneeded tbs::openssl 1.0 [list source [file join $dir signing/openssl.tcl]]
 package ifneeded tbs::signify 1.0 [list source [file join $dir signing/signify.tcl]]

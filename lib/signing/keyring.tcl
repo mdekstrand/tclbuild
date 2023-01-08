@@ -7,6 +7,7 @@ array set KR_DEFAULTS {
     pass_len 32
 }
 set SIGN_SYSTEMS {
+    hmac
     openssl
     minisign
     signify
