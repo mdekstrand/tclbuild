@@ -48,7 +48,7 @@ namespace eval config {
 
     proc set_path {name path} {
         variable layout
-        dict set layout name path
+        dict set layout $name $path
     }
 
     proc path {req {arg {}}} {

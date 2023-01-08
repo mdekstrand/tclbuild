@@ -30,9 +30,17 @@ namespace eval ::tclbuild::dist {
         }
         set products [list]
         foreach f $files {
-            set ext [file extension $f]
-            switch -- $ext {
-                .exe - "" {
+            set name [file tail $f]
+            switch -glob -- $name {
+                shasums -
+                *.txt -
+                *.md -
+                *.mac -
+                *.*sig {
+                    msg -debug "skipping $name"
+                }
+                default {
+                    # assume everything else is a build output
                     msg -debug "found output $f"
                     lappend products $f
                 }
@@ -47,7 +55,7 @@ proc ::tclbuild::dist::act_checksum {product} {
     set shafile [file join $dist shasums]
     if {[file exists $shafile]} {
         msg -info "removing existing $shafile"
-        file remove $shafile
+        file delete $shafile
     }
     set files [glob -directory $dist -tails *]
     msg -info "checksumming [llength $files] files for $product"

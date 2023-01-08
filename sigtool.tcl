@@ -60,7 +60,7 @@ getopt arg $argv {
     -d: - --dist-dir:DIR {
         # look for distributions in DIR instead of dist/
         msg -info "cli: dist root $arg"
-        config::set_path distroot $arg
+        config::set_path dist $arg
     }
 
     -A - --all-results {

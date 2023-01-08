@@ -1,4 +1,5 @@
 /out/
 /dist/
+/site/
 /secret/
 .tool-versions
