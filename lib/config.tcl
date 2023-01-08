@@ -51,7 +51,7 @@ namespace eval config {
         dict set layout name path
     }
 
-    proc path {req} {
+    proc path {req {arg {}}} {
         variable layout
         switch -- $req {
             root {
@@ -62,7 +62,12 @@ namespace eval config {
             }
             distdir {
                 set path [path distroot]
-                return [file join $path [product]]
+                if {[string equal arg {}]} {
+                    set product [product]
+                } else {
+                    set product $arg
+                }
+                return [file join $path $product]
             }
             default {
                 error "unknown path name $req"

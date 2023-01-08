@@ -65,7 +65,7 @@ getopt arg $argv {
 
     --all-results {
         # sign all results in dist/ instead of specified files
-        set paths --all-results
+        set paths --all
     }
 
     --generate-password {
@@ -108,7 +108,7 @@ if {![info exists action]} {
     exit 2
 }
 
-if {[string equal $paths --all-results]} {
+if {[string equal $paths --all]} {
     set paths [tclbuild::dist::built_outputs]
 }
 
