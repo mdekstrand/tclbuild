@@ -46,6 +46,9 @@ jobs:
       run: |
         tclsh build.tcl -p default
 
+    - name: Install signing deps
+      run: sudo apt install -y expect minisign signify
+
     - name: Sign compiled files
       id: sign-jim
       run: |
