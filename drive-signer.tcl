@@ -14,7 +14,7 @@ set password [load_password $pass_src]
 
 spawn {*}$argv
 expect {
-    -re "(confirm\\s+)?password:" {
+    -re "(confirm\\s+)?passphrase:" {
         msg -debug "sending password"
         send "$password\r"
         exp_continue

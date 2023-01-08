@@ -16,6 +16,22 @@ namespace eval ::tbs::openssl {} {
         }]
     }
 
+    proc sigext {} {
+        return "rsasig"
+    }
+
+    proc available {} {
+        catch {
+            exec which openssl
+        } out options
+        if {[dict get options -code]} {
+            return 0
+        } else {
+            msg -debug "openssl: [string trim $out]"
+            return 1
+        }
+    }
+
     proc gen_keys {pass} {
         array set files [files]
 
@@ -32,6 +48,6 @@ namespace eval ::tbs::openssl {} {
         run openssl dgst -sign $files(secret) -passin $pass -sha256 -out "$file.rsasig" $file
     }
 
-    namespace export init files gen_keys sign_file
+    namespace export init files sigext available gen_keys sign_file
     namespace ensemble create -command ::tclbuild::signing::openssl
 }

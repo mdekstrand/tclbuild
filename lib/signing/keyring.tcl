@@ -9,6 +9,7 @@ array set KR_DEFAULTS {
 set SIGN_SYSTEMS {
     openssl
     minisign
+    signify
 }
 
 namespace eval ::tbs {}
