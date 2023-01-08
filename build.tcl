@@ -94,7 +94,7 @@ build::make
 build::finish
 
 set result [build::executable -path]
-msg -success "built $result"
+msg "built $result"
 
 set exename [file tail $result]
 if {![plat::is windows]} {
@@ -112,13 +112,15 @@ msg "preparing distribution $distfile"
 file mkdir $distdir
 file copy -force $result $distfile
 
-if {[info exists env(TCLBUILD_SIGN_KEY)]} {
-    msg -debug "getting signing key from TCLBUILD_SIGN_KEY"
-    set sign_key $env(TCLBUILD_SIGN_KEY)
-} else {
-    msg -warn "no sign key provided, using default key 'UNSAFE'"
-    set sign_key UNSAFE
-}
+msg -success "built $distfile"
+
+# if {[info exists env(TCLBUILD_SIGN_KEY)]} {
+#     msg -debug "getting signing key from TCLBUILD_SIGN_KEY"
+#     set sign_key $env(TCLBUILD_SIGN_KEY)
+# } else {
+#     msg -warn "no sign key provided, using default key 'UNSAFE'"
+#     set sign_key UNSAFE
+# }
 
 # msg "signing result file"
 # set sigout [exec openssl dgst -hmac $sign_key -sha256 $distfile 2>@stderr]
@@ -131,8 +133,8 @@ if {[info exists env(TCLBUILD_SIGN_KEY)]} {
 #     msg -err "cannot parse hash: $sigout"
 #     exit 5
 # }
-
-msg -success "$distfile: $digest"
+#
+# msg -success "$distfile: $digest"
 
 if {[info exists env(GITHUB_OUTPUT)]} {
     msg "writing build information to GitHub Actions"
