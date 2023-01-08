@@ -46,6 +46,13 @@ namespace eval ::tbs::signify {} {
         run expect -f drive-signer.tcl $pass signify -S -s $files(secret) -m $file
     }
 
-    namespace export init files sigext available gen_keys sign_file
+    proc verify_file {file} {
+        array set files [files]
+
+        msg "signify: verifying $file"
+        run signify -V -p $files(public) -m $file
+    }
+
+    namespace export init files sigext available gen_keys sign_file verify_file
     namespace ensemble create -command ::tclbuild::signing::signify
 }

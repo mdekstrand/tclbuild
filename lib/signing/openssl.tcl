@@ -48,6 +48,13 @@ namespace eval ::tbs::openssl {} {
         run openssl dgst -sign $files(secret) -passin $pass -sha256 -out "$file.rsasig" $file
     }
 
-    namespace export init files sigext available gen_keys sign_file
+    proc verify_file {file} {
+        array set files [files]
+
+        msg "openssl: verifying $file"
+        run openssl dgst -verify $files(public) -signature "$file.rsasig" $file
+    }
+
+    namespace export init files sigext available gen_keys sign_file verify_file
     namespace ensemble create -command ::tclbuild::signing::openssl
 }

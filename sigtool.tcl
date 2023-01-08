@@ -68,6 +68,10 @@ getopt arg $argv {
         # generate signatures for files
         action sign_files
     }
+    --verify {
+        # verify signatures for files
+        action verify_files
+    }
 
     arglist {
         if {[info exists paths]} {

@@ -47,6 +47,13 @@ namespace eval ::tbs::minisign {} {
         run expect -f drive-signer.tcl $pass minisign -S -s $files(secret) -m $file
     }
 
-    namespace export init files sigext available gen_keys sign_file
+    proc verify_file {file} {
+        array set files [files]
+
+        msg "minisign: verifying $file"
+        run minisign -V -p $files(public) -m $file
+    }
+
+    namespace export init files sigext available gen_keys sign_file verify_file
     namespace ensemble create -command ::tclbuild::signing::minisign
 }

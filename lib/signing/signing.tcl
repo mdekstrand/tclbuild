@@ -6,8 +6,7 @@ array set KR_DEFAULTS {
     pass_file keys/keyprotect.pass
     pass_len 32
 }
-set SIGN_SYSTEMS {
-    hmac
+set DEFAULT_SYSTEMS {
     openssl
     minisign
     signify
@@ -73,10 +72,10 @@ proc ::tclbuild::signing::wanted_systems {options} {
     set wanted [dict get $options signers]
     if {[lempty $wanted] || [string equal $wanted all]} {
         msg -debug "want all signers"
-        return $::SIGN_SYSTEMS
+        return $::DEFAULT_SYSTEMS
     } elseif {[string equal $wanted available]} {
         set systems {}
-        foreach sys $::SIGN_SYSTEMS {
+        foreach sys $::DEFAULT_SYSTEMS {
             if {[$sys available]} {
                 msg -debug "$sys is available"
                 lappend systems $sys
@@ -85,11 +84,6 @@ proc ::tclbuild::signing::wanted_systems {options} {
             }
         }
     } else {
-        foreach sys $wanted {
-            if {$sys ni $::SIGN_SYSTEMS} {
-                msg -err "unknown system $sys"
-            }
-        }
         return $wanted
     }
 }
@@ -158,6 +152,22 @@ proc ::tclbuild::signing::act_sign_files {options args} {
     foreach file $args {
         foreach sys [wanted_systems $options] {
             $sys sign_file $pass $file
+        }
+    }
+}
+
+proc ::tclbuild::signing::act_verify_files {options args} {
+    global KR_DEFAULTS
+    load_systems $options
+
+    foreach file $args {
+        foreach sys [wanted_systems $options] {
+            set sigfile "$file.[$sys sigext]"
+            if {[file exists $sigfile]} {
+                $sys verify_file $file
+            } else {
+                msg -warn "$sys: signature $sigfile not found"
+            }
         }
     }
 }
