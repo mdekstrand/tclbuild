@@ -46,6 +46,14 @@ jobs:
       run: |
         tclsh build.tcl -p default
 
+    - name: Sign build artifacts
+      shell: alpine.sh {0}
+      if: ${{ secrets.SIGNING_KEY_PASSWORD }}
+      env:
+        SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+      run: |
+        tclsh sigtool.tcl --sign -s hmac --all-results
+
     - uses: actions/upload-artifact@v3
       with:
         name: jimsh-${{ steps.build-jim.outputs.build-tag }}
@@ -83,6 +91,13 @@ jobs:
       id: build-jim-default-arm
       run: |
         tclsh build.tcl -p default -a arm64
+
+    - name: Sign build artifacts
+      if: ${{ secrets.SIGNING_KEY_PASSWORD }}
+      env:
+        SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+      run: |
+        tclsh sigtool.tcl --sign -s hmac --all-results
 
     - uses: actions/upload-artifact@v3
       with:
@@ -124,6 +139,14 @@ jobs:
       shell: msys2 {0}
       run: |
         tclsh build.tcl -p default
+
+    - name: Sign build artifacts
+      shell: msys2 {0}
+      if: ${{ secrets.SIGNING_KEY_PASSWORD }}
+      env:
+        SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+      run: |
+        tclsh sigtool.tcl --sign -s hmac --all-results
 
     - uses: actions/upload-artifact@v3
       with:
