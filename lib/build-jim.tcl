@@ -66,6 +66,18 @@ proc ::build::configure {} {
 proc ::build::make {} {
     msg "jim: make"
     run make
+    msg -debug "checking for build artifact"
+    set exe [executable]
+    if {![file exists $exe]} {
+        msg -err "build completed successfully, but $exe does not exist"
+        error -code {TCLBUILD MAKE NOEXE}
+    }
+}
+
+proc ::build::strip {} {
+    set exe [executable]
+    msg "jim: stripping $exe"
+    run strip $exe
 }
 
 proc ::build::executable {args} {

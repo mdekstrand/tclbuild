@@ -13,6 +13,7 @@ package require getopt
 package require tclbuild::config
 
 set fresh_build 1
+set strip 0
 
 getopt arg $argv {
     -v - --verbose {
@@ -29,12 +30,17 @@ getopt arg $argv {
         set fresh_build 0
     }
 
+    -s - --strip {
+        set strip 1
+        msg -debug "cli: requesting stripped binaries"
+    }
+
     -a: - --arch:ARCH {
         # build for architecture ARCH
         set config::arch $arg
         msg -debug "cli: architecture $config::arch"
     }
-    -s: - --os:OS {
+    --os:OS {
         # override autodetected os to OS
         set config::os $arg
         msg -debug "cli: OS $config::os"
@@ -91,6 +97,9 @@ if {$fresh_build} {
 }
 build::configure
 build::make
+if {$strip} {
+    build::strip
+}
 build::finish
 
 set result [build::executable -path]

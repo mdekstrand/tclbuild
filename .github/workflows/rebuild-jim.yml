@@ -37,7 +37,7 @@ jobs:
       shell: alpine.sh {0}
       id: build-jim
       run: |
-        tclsh build.tcl
+        tclsh build.tcl --strip
 
     - name: Build default Jim
       shell: alpine.sh {0}
@@ -45,16 +45,6 @@ jobs:
       if: ${{ matrix.arch == 'x86_64' }}
       run: |
         tclsh build.tcl -p default
-
-    - name: Install signing deps
-      run: sudo apt install -y expect minisign signify
-
-    - name: Sign compiled files
-      id: sign-jim
-      run: |
-        tclsh sigtool.tcl --sign dist/jim-*/jimsh-*
-      env:
-        SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
 
     - uses: actions/upload-artifact@v3
       with:
@@ -77,12 +67,12 @@ jobs:
     - name: Build custom Jim for Intel
       id: build-jim-intel
       run: |
-        tclsh build.tcl -a x86_64
+        tclsh build.tcl -a x86_64 --strip
 
     - name: Build custom Jim for ARM
       id: build-jim-arm
       run: |
-        tclsh build.tcl -a arm64
+        tclsh build.tcl -a arm64 --strip
 
     - name: Build default Jim for Intel
       id: build-jim-default-intel
@@ -127,7 +117,7 @@ jobs:
       id: build-jim-custom
       shell: msys2 {0}
       run: |
-        tclsh build.tcl
+        tclsh build.tcl --strip
 
     - name: Build default Jim for Windows
       id: build-jim-default
