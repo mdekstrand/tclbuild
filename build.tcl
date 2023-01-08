@@ -120,17 +120,17 @@ if {[info exists env(TCLBUILD_SIGN_KEY)]} {
     set sign_key UNSAFE
 }
 
-msg "signing result file"
-set sigout [exec openssl dgst -hmac $sign_key -sha256 $distfile 2>@stderr]
-msg -debug $sigout
-if {[regexp {^HMAC-[A-Z0-9-]+\(([a-zA-Z0-9/_.-]+)\)=\s+([0-9a-f]+)} $sigout -> path digest]} {
-    set hfp [open "$distfile.mac" w]
-    puts $hfp $digest
-    close $hfp
-} else {
-    msg -err "cannot parse hash: $sigout"
-    exit 5
-}
+# msg "signing result file"
+# set sigout [exec openssl dgst -hmac $sign_key -sha256 $distfile 2>@stderr]
+# msg -debug $sigout
+# if {[regexp {^HMAC-[A-Z0-9-]+\(([a-zA-Z0-9/_.-]+)\)=\s+([0-9a-f]+)} $sigout -> path digest]} {
+#     set hfp [open "$distfile.mac" w]
+#     puts $hfp $digest
+#     close $hfp
+# } else {
+#     msg -err "cannot parse hash: $sigout"
+#     exit 5
+# }
 
 msg -success "$distfile: $digest"
 
