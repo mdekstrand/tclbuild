@@ -6,4 +6,6 @@ stripped-down Jim), but also some additional system automation tasks.  These
 include:
 
 - Precompiled binaries for a variety of platforms.
-- A small library of comfort utilities and bits from the Web, most of which work in Jim.
+- A small library of comfort utilities and bits from the Web, most of which work
+  in Jim.  This library is intended to be included as a Git submodule, and is
+  available at <https://github.com/mdekstrand/common-tcl>.

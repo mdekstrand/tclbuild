@@ -2,7 +2,13 @@
 
 [Introduction](index.md)
 
-# TCL builds
+# Common Library
+
+- [missing](common/missing.md)
+- [logging](common/logging.md)
+- [ansifmt](common/ansifmt.md)
+
+# Tcl Binaries
 
 - [Verification Keys](keys.md)
 - [Jim (default)](dist/jim-default/index.md)
