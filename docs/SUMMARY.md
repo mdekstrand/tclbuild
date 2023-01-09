@@ -1,8 +1,8 @@
 # Summary
 
+[Introduction](intro.md)
 
-
-## TCL builds
+# TCL builds
 
 - [Verification Keys](keys.md)
 - [Jim (default)](dist/jim-default/index.md)
