@@ -48,6 +48,18 @@ namespace eval ::tclbuild::dist {
         }
         return $products
     }
+
+    # get the basename for a product
+    proc build_basename {product} {
+        switch -glob -- $product {
+            jim-* {
+                return "jimsh"
+            }
+            default {
+                error "unsupported product $product"
+            }
+        }
+    }
 }
 
 proc ::tclbuild::dist::act_checksum {product} {
@@ -93,6 +105,7 @@ proc ::tclbuild::dist::act_manifest {product} {
     set shafile [file join $dist shasums]
     set md_file [file join docs $dist manifest.md]
     set txt_file [file join $dist manifest.txt]
+    set base [build_basename $product]
 
     set platforms [build_groups $product]
     set plat_labels {
@@ -102,6 +115,10 @@ proc ::tclbuild::dist::act_manifest {product} {
     }
 
     set mdh [open $md_file w]
+    set mfh [open $txt_file w]
+    puts $mfh "product: $product"
+    puts $mfh "basename: $base"
+    puts $mfh ""
     dict for {os builds} $platforms {
         msg "building manifest for $os"
         if {[dict exists $plat_labels $os]} {
@@ -110,15 +127,22 @@ proc ::tclbuild::dist::act_manifest {product} {
 
         puts $mdh "## $os\n"
         dict for {arch file} $builds {
+            switch -glob -- $file "$base.exe" - "$base-*" {
+                msg -debug "file $file matches base"
+            } default {
+                msg -warn "file $file does not have basename $base"
+            }
             set sigs {}
             lappend sigs [subst -nocommands {[[minisign]($file.minisig)]}]
             lappend sigs [subst -nocommands {[[signify]($file.sig)]}]
             lappend sigs [subst -nocommands {[[RSA (openssl)]($file.rsasig)]}]
 
             puts $mdh "- \[`$file`\]($file) [join $sigs { }]"
+            puts $mfh $file
         }
         puts $mdh ""
     }
 
     close $mdh
+    close $mfh
 }
