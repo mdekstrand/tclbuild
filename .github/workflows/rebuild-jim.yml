@@ -214,6 +214,7 @@ jobs:
       shell: alpine.sh {0}
       run: |
         tclsh disttool.tcl --manifest --all
+        tclsh sigtool.tcl --sign dist/*/manifest.txt
 
     - name: 📇 Generate documentation site
       shell: alpine.sh {0}

@@ -107,6 +107,18 @@ proc ::tclbuild::dist::act_manifest {product} {
     set txt_file [file join $dist manifest.txt]
     set base [build_basename $product]
 
+    msg -debug "reading shasums for $product"
+    set shafh [open [file join $dist shasums] r]
+    set raw_shasums [read $shafh]
+    close $shafh
+    set shasums [dict create]
+    foreach {hash file} $raw_shasums {
+        if {[string equal -length 1 $file "*"]} {
+            set file [string range $file 1 end]
+        }
+        dict set shasums $file $hash
+    }
+
     set platforms [build_groups $product]
     set plat_labels {
         windows Windows
@@ -132,13 +144,18 @@ proc ::tclbuild::dist::act_manifest {product} {
             } default {
                 msg -warn "file $file does not have basename $base"
             }
+
+            set size [file size [file join $dist $file]]
+            set size_kb [expr $size / 1024]
+
             set sigs {}
             lappend sigs [subst -nocommands {[[minisign]($file.minisig)]}]
             lappend sigs [subst -nocommands {[[signify]($file.sig)]}]
-            lappend sigs [subst -nocommands {[[RSA (openssl)]($file.rsasig)]}]
+            lappend sigs [subst -nocommands {[[openssl]($file.rsasig)]}]
 
-            puts $mdh "- \[`$file`\]($file) [join $sigs { }]"
-            puts $mfh $file
+            puts $mdh "- \[`$file`\]($file) ($size_kb KiB) [join $sigs { }]"
+            set sha [dict get $shasums $file]
+            puts $mfh "$file\t$size\t$sha"
         }
         puts $mdh ""
     }

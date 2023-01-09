@@ -154,6 +154,8 @@ proc ::tclbuild::signing::act_sign_files {options args} {
             $sys sign_file $pass $file
         }
     }
+
+    msg -success "signed [llength $args] files"
 }
 
 proc ::tclbuild::signing::act_verify_files {options args} {
