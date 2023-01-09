@@ -59,7 +59,7 @@ proc ::tclbuild::dist::act_checksum {product} {
     }
     set files [glob -directory $dist -tails *]
     msg -info "checksumming [llength $files] files for $product"
-    run -cwd $dist -outfile shasums sha256sum --binary {*}$files
+    run -cwd $dist -outfile shasums sha256sum --binary {*}[lsort $files]
 }
 
 proc ::tclbuild::dist::build_groups {product} {
