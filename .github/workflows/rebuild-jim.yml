@@ -49,14 +49,14 @@ jobs:
       shell: alpine.sh {0}
       id: build-jim
       run: |
-        tclsh build.tcl --strip
+        tclsh build.tcl --strip --if-missing
 
     - name: Build default Jim
       shell: alpine.sh {0}
       id: build-jim-default
       if: ${{ matrix.arch == 'x86_64' }}
       run: |
-        tclsh build.tcl -p default
+        tclsh build.tcl -p default --if-missing
 
     - name: Sign build artifacts
       shell: alpine.sh {0}
