@@ -23,30 +23,16 @@ namespace eval ::tclbuild::dist {
         msg -debug "scanning for products in $dist"
         if {[string equal $product -all]} {
             msg -debug "scanning for all produced files"
-            set files [glob -directory $dist -type f */*]
+            set files [glob -directory $dist */*.descr]
         } else {
             msg -debug "scanning for all files in product $product"
-            set files [glob -directory [file join $dist $product] -type f *]
+            set files [glob -directory [file join $dist $product] -type f *.descr]
         }
-        set products [list]
+        set outputs [list]
         foreach f $files {
-            set name [file tail $f]
-            switch -glob -- $name {
-                shasums -
-                *.txt -
-                *.md -
-                *.mac -
-                *.*sig {
-                    msg -debug "skipping $name"
-                }
-                default {
-                    # assume everything else is a build output
-                    msg -debug "found output $f"
-                    lappend products $f
-                }
-            }
+            lappend outputs [file root $f]
         }
-        return $products
+        return $outputs
     }
 
     # get the basename for a product
@@ -60,18 +46,6 @@ namespace eval ::tclbuild::dist {
             }
         }
     }
-}
-
-proc ::tclbuild::dist::act_checksum {product} {
-    set dist [config::path distdir $product]
-    set shafile [file join $dist shasums]
-    if {[file exists $shafile]} {
-        msg -info "removing existing $shafile"
-        file delete $shafile
-    }
-    set files [glob -directory $dist -tails *]
-    msg -info "checksumming [llength $files] files for $product"
-    run -cwd $dist -outfile shasums sha256sum --binary {*}[lsort $files]
 }
 
 proc ::tclbuild::dist::build_groups {product} {
@@ -102,22 +76,9 @@ proc ::tclbuild::dist::build_groups {product} {
 
 proc ::tclbuild::dist::act_manifest {product} {
     set dist [config::path distdir $product]
-    set shafile [file join $dist shasums]
     set md_file [file join docs $dist manifest.md]
     set txt_file [file join $dist manifest.txt]
     set base [build_basename $product]
-
-    msg -debug "reading shasums for $product"
-    set shafh [open [file join $dist shasums] r]
-    set raw_shasums [read $shafh]
-    close $shafh
-    set shasums [dict create]
-    foreach {hash file} $raw_shasums {
-        if {[string equal -length 1 $file "*"]} {
-            set file [string range $file 1 end]
-        }
-        dict set shasums $file $hash
-    }
 
     set platforms [build_groups $product]
     set plat_labels {
@@ -154,8 +115,10 @@ proc ::tclbuild::dist::act_manifest {product} {
             lappend sigs [subst -nocommands {[[openssl]($file.rsasig)]}]
 
             puts $mdh "- \[`$file`\]($file) ($size_kb KiB) [join $sigs { }]"
-            set sha [dict get $shasums $file]
-            puts $mfh "$file\t$size\t$sha"
+
+            set bdh [open [file join $dist "$file.descr"]]
+            puts $mfh [read $bdh]
+            close $bdh
         }
         puts $mdh ""
     }

@@ -14,7 +14,7 @@ namespace eval buildenv {
         msg -warn "default toolchain configuration, doing nothing"
     }
 
-    proc setup_env {} {
+    proc setup_env {srcdir} {
         variable envvars
         foreach name [array names envvars] {
             msg -debug "setting $name"

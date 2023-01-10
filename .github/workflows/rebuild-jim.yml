@@ -253,12 +253,6 @@ jobs:
         path: dist
         key: dist-${{ hashFiles('profiles.tcl') }}
 
-    - name: 🧇 Generate distribution hashes
-      shell: alpine.sh {0}
-      id: hash-builds
-      run: |
-        tclsh disttool.tcl --checksum --all
-
     - name: 🪵 Generate distribution manifests
       shell: alpine.sh {0}
       run: |

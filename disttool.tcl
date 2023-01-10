@@ -47,10 +47,6 @@ getopt arg $argv {
         set products --all
     }
 
-    --checksum {
-        # compute checksums for distribution files
-        action checksum
-    }
     --manifest {
         # prepare distribution manifests for the product
         action manifest

@@ -10,6 +10,7 @@ package require logging
 package require platinfo
 package require missing
 package require getopt
+package require tagline
 package require tclbuild::config
 package require tclbuild::profiledb
 
@@ -120,6 +121,8 @@ if {$if_missing && [file exists $distfile]} {
 # now we are ready to go
 buildenv::configure
 build::init
+msg "$product: version [build::full_version]"
+
 if {$fresh_build} {
     build::clean
 }
@@ -133,6 +136,21 @@ build::finish
 msg "preparing distribution $distfile"
 file mkdir $distdir
 file copy -force $result $distfile
+
+msg "saving build info"
+set mfh [open "$distfile.descr" w]
+dict for {key val} [::build::buildinfo] {
+    set line [tagline unparse $exename $key $val]
+    msg -debug $line
+    puts $mfh $line
+}
+set hash [tagline parse [exec openssl dgst -sha256 $distfile]]
+lset hash 0 $exename
+# make it consistent
+set line [tagline unparse $hash]
+msg -debug $line
+puts $mfh $line
+close $mfh
 
 msg -success "built $distfile"
 
