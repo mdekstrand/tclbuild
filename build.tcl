@@ -13,6 +13,7 @@ package require getopt
 package require tclbuild::config
 package require tclbuild::profiledb
 
+set if_missing 0
 set fresh_build 1
 set strip 0
 
@@ -58,6 +59,11 @@ getopt arg $argv {
         msg -debug "cli: profile $arg"
     }
 
+    --if-missing {
+        # only build if the distribution is missing
+        set if_missing 1
+    }
+
     -h - --help {
         # print this help and exit
         help
@@ -90,19 +96,7 @@ build::use_profile $config::profile
 set product [config::product]
 set distdir [config::path distdir $product]
 
-# now we are ready to go
-buildenv::configure
-build::init
-if {$fresh_build} {
-    build::clean
-}
-build::configure
-build::make
-if {$strip} {
-    build::strip
-}
-build::finish
-
+# find out the output directory
 set result [build::executable -path]
 msg "built $result"
 
@@ -116,8 +110,26 @@ if {![plat::is windows]} {
     set exename "$exename-[config::tag]"
 }
 
-
 set distfile [file join $distdir $exename]
+
+if {$if_missing && [file exists $distfile]} {
+    msg "$distfile already exists, skipping build"
+    exit 0
+}
+
+# now we are ready to go
+buildenv::configure
+build::init
+if {$fresh_build} {
+    build::clean
+}
+build::configure
+build::make
+if {$strip} {
+    build::strip
+}
+build::finish
+
 msg "preparing distribution $distfile"
 file mkdir $distdir
 file copy -force $result $distfile
