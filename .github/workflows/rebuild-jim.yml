@@ -38,7 +38,7 @@ jobs:
       with:
         arch: ${{ matrix.arch }}
         branch: v3.17
-        packages: build-base openssl tcl minisign
+        packages: build-base openssl tcl minisign git
 
     - name: remove if invalid
       id: clean-build
