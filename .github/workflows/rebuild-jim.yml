@@ -42,7 +42,7 @@ jobs:
     - name: remove if unused
       id: clean-build
       run: |
-        tclsh sigtool.tcl --verify -A --remove-invalid -s minisign
+        tclsh sigtool.tcl --verify -A --delete-invalid -s minisign
 
     - name: Build custom Jim
       shell: alpine.sh {0}
@@ -93,7 +93,7 @@ jobs:
     - name: remove if unused
       id: clean-build
       run: |
-        tclsh sigtool.tcl --verify -A --remove-invalid -s minisign
+        tclsh sigtool.tcl --verify -A --delete-invalid -s minisign
 
     - name: Build custom Jim for Intel
       id: build-jim-intel
@@ -155,7 +155,7 @@ jobs:
     - name: remove if unused
       id: clean-build
       run: |
-        tclsh sigtool.tcl --verify -A --remove-invalid -s openssl
+        tclsh sigtool.tcl --verify -A --delete-invalid -s openssl
 
     - name: Dump environment info
       shell: msys2 {0}
