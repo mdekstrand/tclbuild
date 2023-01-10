@@ -160,6 +160,7 @@ jobs:
 
     - name: remove if unused
       id: clean-build
+      shell: msys2 {0}
       run: |
         tclsh sigtool.tcl --verify -A --delete-invalid -s openssl
 
