@@ -181,7 +181,14 @@ proc ::tclbuild::signing::act_verify_files {options args} {
 
     set nbad [llength [array names bad]]
     if {$nbad > 0} {
-        error "$nbad files failed"
+        if {[dict get $options invalid] eq "error"} {
+            error "$nbad files failed"
+        } else {
+            foreach bf [array names bad] {
+                msg -info "deleting invalid archive $bf"
+                file delete $bf [glob "$bf.*"]
+            }
+        }
     } else {
         msg -success "all files OK"
     }

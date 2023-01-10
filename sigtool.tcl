@@ -16,6 +16,7 @@ package require tclbuild::distrepo
 set options {
     force 0
     require 0
+    invalid error
     signers {}
 }
 
@@ -61,6 +62,11 @@ getopt arg $argv {
         # look for distributions in DIR instead of dist/
         msg -info "cli: dist root $arg"
         config::set_path dist $arg
+    }
+
+    --delete-invalid {
+        # with --verify, delete outputs with invalid signatures
+        dict set options invalid delete
     }
 
     -A - --all-results {
