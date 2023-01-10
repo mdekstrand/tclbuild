@@ -1,12 +1,35 @@
 package provide tclbuild::build::jim 1.0
 package require tclbuild::config
 package require tclbuild::buildenv
+package require tclbuild::profiledb
 package require missing
 package require runprog
 
 namespace eval ::build {
     variable jimdir jimtcl
     variable _save_pwd
+}
+
+proc ::build::use_profile {name} {
+    set profile $::profiledb::profiles(jim-$name)
+    dict for {key val} $profile {
+        set ::build::$key $val
+    }
+
+    set opts $::build::options
+    variable config_args {}
+    while {![lempty $opts]} {
+        set opt [lshift opts]
+        switch -- $opt {
+            -config-arg {
+                lappend config_args [lshift opts]
+            }
+            default {
+                msg -err "profile jim-$name: unrecognized option $opt"
+                error "bad profile option"
+            }
+        }
+    }
 }
 
 proc ::build::init {} {
@@ -27,40 +50,14 @@ proc ::build::clean {} {
 }
 
 proc ::build::configure {} {
+    variable config_args
     if {[file exists jim-config.h]} {
         msg "jim: already configured, skipping"
         return
     }
 
-    set args {}
-    set exts [::config::extensions]
-    set disable {}
-    set enable {}
-
-    if {[string equal $exts all]} {
-        lappend args --full
-        set exts {}
-    }
-
-    foreach ext $exts {
-        if {[string match -* $ext]} {
-            lappend disable [string range $ext 1 end]
-        } else {
-            lappend enable $ext
-        }
-    }
-
-    if {![lempty $disable]} {
-        msg "jim: disabling extensions: $disable"
-        lappend args "--without-ext=[join $disable ,]"
-    }
-    if {![lempty $enable]} {
-        msg "jim: enabling extensions: $enable"
-        lappend args "--with-ext=[join $enable ,]"
-    }
-
-    msg "jim: configure $args"
-    run "./configure" {*}$args
+    msg "jim: configure $config_args"
+    run "./configure" {*}$config_args
 }
 
 proc ::build::make {} {

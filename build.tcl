@@ -11,6 +11,7 @@ package require platinfo
 package require missing
 package require getopt
 package require tclbuild::config
+package require tclbuild::profiledb
 
 set fresh_build 1
 set strip 0
@@ -83,11 +84,9 @@ try_require "tclbuild::os::$config::os" {
     exit 3
 }
 
-try_require "tclbuild::profile::${config::stack}::${config::profile}" {
-    msg -err "$config::stack: unknown profile $config::profile"
-    exit 3
-}
+profiledb::load "profiles.tcl"
 msg "$config::stack: building with profile $config::profile"
+build::use_profile $config::profile
 set product [config::product]
 set distdir [config::path distdir $product]
 
