@@ -39,7 +39,7 @@ jobs:
         branch: v3.17
         packages: build-base openssl tcl minisign
 
-    - name: remove if unused
+    - name: remove if invalid
       id: clean-build
       shell: alpine.sh {0}
       run: |
@@ -91,7 +91,7 @@ jobs:
       run: |
         tclsh envinfo.tcl
 
-    - name: remove if unused
+    - name: remove if invalid
       id: clean-build
       run: |
         tclsh sigtool.tcl --verify -A --delete-invalid -s minisign
@@ -158,7 +158,7 @@ jobs:
           make
           tcl
 
-    - name: remove if unused
+    - name: remove if invalid
       id: clean-build
       shell: msys2 {0}
       run: |
