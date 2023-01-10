@@ -27,11 +27,22 @@ jobs:
       with:
         submodules: recursive
 
+    - uses: actions/cache/restore@v3
+      id: dist-cache
+      with:
+        path: dist
+        key: dist-${{ hashFiles('profiles.tcl') }}
+
     - uses: jirutka/setup-alpine@v1
       with:
         arch: ${{ matrix.arch }}
         branch: v3.17
-        packages: build-base openssl tcl
+        packages: build-base openssl tcl minisign
+
+    - name: remove if unused
+      id: clean-build
+      run: |
+        tclsh sigtool.tcl --verify -A --remove-invalid -s minisign
 
     - name: Build custom Jim
       shell: alpine.sh {0}
@@ -67,29 +78,42 @@ jobs:
       with:
         submodules: recursive
 
+    - run: brew install minisign
+
+    - uses: actions/cache/restore@v3
+      id: dist-cache
+      with:
+        path: dist
+        key: dist-${{ hashFiles('profiles.tcl') }}
+
     - name: Dump TCL environment info
       run: |
         tclsh envinfo.tcl
 
+    - name: remove if unused
+      id: clean-build
+      run: |
+        tclsh sigtool.tcl --verify -A --remove-invalid -s minisign
+
     - name: Build custom Jim for Intel
       id: build-jim-intel
       run: |
-        tclsh build.tcl -a x86_64 --strip
+        tclsh build.tcl -a x86_64 --strip --if-missing
 
     - name: Build custom Jim for ARM
       id: build-jim-arm
       run: |
-        tclsh build.tcl -a arm64 --strip
+        tclsh build.tcl -a arm64 --strip --if-missing
 
     - name: Build default Jim for Intel
       id: build-jim-default-intel
       run: |
-        tclsh build.tcl -p default -a x86_64
+        tclsh build.tcl -p default -a x86_64 --if-missing
 
     - name: Build default Jim for ARM
       id: build-jim-default-arm
       run: |
-        tclsh build.tcl -p default -a arm64
+        tclsh build.tcl -p default -a arm64 --if-missing
 
     - name: Sign build artifacts
       env:
@@ -111,6 +135,13 @@ jobs:
       with:
         submodules: recursive
 
+    - uses: actions/cache/restore@v3
+      id: dist-cache
+      with:
+        path: dist
+        key: dist-${{ hashFiles('profiles.tcl') }}
+        enableCrossOsArchive: true
+
     - uses: msys2/setup-msys2@v2
       with:
         update: true
@@ -120,6 +151,11 @@ jobs:
           mingw-w64-i686-gcc
           make
           tcl
+
+    - name: remove if unused
+      id: clean-build
+      run: |
+        tclsh sigtool.tcl --verify -A --remove-invalid -s openssl
 
     - name: Dump environment info
       shell: msys2 {0}
@@ -203,6 +239,12 @@ jobs:
       run: |
         # make sure those signatures we just generated work
         tclsh sigtool.tcl --verify -A --require
+
+    - uses: actions/cache/save@v3
+      id: dist-cache
+      with:
+        path: dist
+        key: dist-${{ hashFiles('profiles.tcl') }}
 
     - name: 🧇 Generate distribution hashes
       shell: alpine.sh {0}
