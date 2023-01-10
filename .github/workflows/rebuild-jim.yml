@@ -157,6 +157,7 @@ jobs:
         msystem: mingw32
         install: >-
           openssl
+          git
           mingw-w64-i686-gcc
           make
           tcl
