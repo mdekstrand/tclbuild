@@ -31,7 +31,12 @@ namespace eval config {
         variable os
 
         if {![info exists arch]} {
-            set arch [plat::arch]
+            if {[file exists /etc/apk/arch]} {
+                msg "using Alpine architecture"
+                set arch [string trim [read_file /etc/apk/arch]]
+            } else {
+                set arch [plat::arch]
+            }
         }
         if {![info exists os]} {
             set os [plat::os]
