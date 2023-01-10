@@ -17,10 +17,11 @@ jobs:
       matrix:
         arch:
         - x86_64
-        # - x86
+        - x86
         - aarch64
         - armhf
         - armv7
+        - ppc64le
 
     steps:
     - uses: actions/checkout@v3
