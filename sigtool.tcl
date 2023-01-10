@@ -115,6 +115,10 @@ if {![info exists action]} {
 }
 
 if {[string equal $paths --all]} {
+    if {![file exist [config::path distroot]]} {
+        msg -warn "nothing to do, exiting"
+        exit 0
+    }
     set paths [tclbuild::dist::build_outputs]
 }
 
