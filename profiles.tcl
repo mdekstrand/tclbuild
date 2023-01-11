@@ -6,3 +6,7 @@ profile -n 2 -stack jim custom {
 }
 
 profile -n 2 -stack jim default {}
+
+profile -n 2 -stack jim full {
+    -config-arg --full
+}
