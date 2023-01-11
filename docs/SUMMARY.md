@@ -5,6 +5,7 @@
 # Common Library
 
 - [missing](common/missing.md)
+- [kvlookup](common/kvlookup.md)
 - [logging](common/logging.md)
 - [ansifmt](common/ansifmt.md)
 
