@@ -13,7 +13,6 @@ profile -n 2 -stack jim full {
 }
 
 profile -n 2 -stack tclkit client {
-    -pkg zlib
     -pkg tclcurl
     -pkg tcllib
 }
