@@ -227,10 +227,11 @@ install_manifest()
 [ -r "$SCRIPTDIR/fetch-tcl-binary.local" ] && . "$SCRIPTDIR/fetch-tcl-binary.local"
 
 # process command-line options
-while getopts vqa:d:p: flag; do
+while getopts vqn:a:d:p: flag; do
     case $flag in
         v) verbosity=1;;
         q) verbosity=-1;;
+        n) CMDNAME=$OPTARG;;
         a) ARCH=$OPTARG;;
         d) BINDIR=$OPTARG;;
         p) PRODUCT=$OPTARG;;
