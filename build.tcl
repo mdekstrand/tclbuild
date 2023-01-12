@@ -14,9 +14,10 @@ package require tagline
 package require tclbuild::config
 package require tclbuild::profiledb
 
-set if_missing 0
-set fresh_build 1
-set strip 0
+set options {
+    if-missing 0
+    fresh-build 1
+}
 
 if {![string equal [file normalize .] $tbroot]} {
     msg -err "must be run from tclbuild root directory"
@@ -35,12 +36,7 @@ getopt arg $argv {
 
     --no-clean {
         # don't clean brefore building
-        set fresh_build 0
-    }
-
-    -s - --strip {
-        set strip 1
-        msg -debug "cli: requesting stripped binaries"
+        dict set options fresh-build 0
     }
 
     -a: - --arch:ARCH {
@@ -62,7 +58,7 @@ getopt arg $argv {
 
     --if-missing {
         # only build if the distribution is missing
-        set if_missing 1
+        dict set options if-missing 1
     }
 
     -h - --help {
@@ -113,24 +109,22 @@ if {![plat::is windows]} {
 
 set distfile [file join $distdir $exename]
 
-if {$if_missing && [file exists $distfile]} {
+if {[dict get $options if-missing] && [file exists $distfile]} {
     msg "$distfile already exists, skipping build"
     exit 0
 }
 
 # now we are ready to go
 buildenv::configure
-build::init
+build::init $options
 msg "$product: version [build::full_version]"
 
-if {$fresh_build} {
+if {[dict get $options fresh-build]} {
     build::clean
 }
 build::configure
 build::make
-if {$strip} {
-    build::strip
-}
+build::postprocess
 build::finish
 
 msg "preparing distribution $distfile"

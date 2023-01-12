@@ -20,11 +20,15 @@ proc ::build::use_profile {name} {
 
     set opts $::build::options
     variable config_args {}
+    variable post_steps {}
     while {![lempty $opts]} {
         set opt [lshift opts]
         switch -- $opt {
             -config-arg {
                 lappend config_args [lshift opts]
+            }
+            -post {
+                lappend post_steps [lshift opts]
             }
             default {
                 msg -err "profile jim-$name: unrecognized option $opt"
@@ -34,7 +38,7 @@ proc ::build::use_profile {name} {
     }
 }
 
-proc ::build::init {} {
+proc ::build::init {options} {
     variable jimdir
     msg "building jim at $jimdir"
     ::buildenv::setup_env $jimdir
@@ -100,11 +104,14 @@ proc ::build::make {} {
     }
 }
 
-proc ::build::strip {} {
+proc ::build::postprocess {} {
     variable jimdir
+    variable post_steps
     set exe [executable]
-    msg "jim: stripping $exe"
-    run strip "$jimdir/$exe"
+    if {"strip" in $post_steps} {
+        msg "jim: stripping $exe"
+        run strip "$jimdir/$exe"
+    }
 }
 
 proc ::build::executable {args} {
