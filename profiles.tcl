@@ -11,4 +11,9 @@ profile -n 2 -stack jim default {}
 profile -n 2 -stack jim full {
     -config-arg --full
 }
- profile -n 2 -stack tclkit default {}
+
+profile -n 2 -stack tclkit client {
+    -pkg zlib
+    -pkg tclcurl
+    -pkg tcllib
+}

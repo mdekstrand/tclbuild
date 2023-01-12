@@ -50,6 +50,11 @@ getopt arg $argv {
         msg -debug "cli: OS $config::os"
     }
 
+    -S: - --system:NAME {
+        # build system NAME (default jim)
+        set config::stack $arg
+    }
+
     -p: - --profile:NAME {
         # use build profile NAME
         set config::profile $arg

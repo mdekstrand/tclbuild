@@ -13,6 +13,7 @@ package ifneeded tbs::minisign 1.0 [list source [file join $dir signing/minisign
 package ifneeded tbs::openssl 1.0 [list source [file join $dir signing/openssl.tcl]]
 package ifneeded tbs::signify 1.0 [list source [file join $dir signing/signify.tcl]]
 package ifneeded tclbuild::build::jim 1.0 [list source [file join $dir build-jim.tcl]]
+package ifneeded tclbuild::build::tclkit 1.0 [list source [file join $dir build-tclkit.tcl]]
 package ifneeded tclbuild::buildenv 1.0 [list source [file join $dir buildenv.tcl]]
 package ifneeded tclbuild::config 1.0 [list source [file join $dir config.tcl]]
 package ifneeded tclbuild::distrepo 1.0 [list source [file join $dir dist.tcl]]
