@@ -5,7 +5,7 @@ namespace eval config {
     variable arch
     variable os
     variable stack jim
-    variable profile custom
+    variable profile default
     variable layout {
         root {}
         dist {[repopath dist]}
