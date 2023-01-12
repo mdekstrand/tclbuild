@@ -155,6 +155,11 @@ fetch_url()
     fi
     url="$BASEURL/$url"
 
+    if [ -z "$WORKDIR" ]; then
+        _err "no workdir, invalid invocation order"
+        exit 10
+    fi
+
     _dbg "fetching $url"
     if which curl >/dev/null 2>&1; then
         curl --fail -L -o "$WORKDIR/$file" "$url" || exit 2
@@ -185,9 +190,34 @@ fetch_manifest()
     verify_file "$WORKDIR/manifest.txt"
 }
 
-check_current()
+process_manifest()
 {
-    exit
+    TCL_BASENAME=$(awk '/^basename:/ {print $2}' "$WORKDIR/manifest.txt")
+    _info "$PRODUCT basename: $TCL_BASENAME"
+    EXENAME="$CMDNAME-$PLAT"
+}
+
+# BINARY FETCHING AND INSTaLLATion
+
+fetch_binary()
+{
+    setup_workdir
+    echo "fetching $EXENAME"
+    fetch_url "$PRODUCT/$EXENAME"
+    fetch_url "$PRODUCT/$EXENAME.$SIG_EXT"
+    verify_file "$WORKDIR/$EXENAME"
+}
+
+install_binary()
+{
+    echo "installing $EXENAME"
+    install -d "$BINDIR"
+    install -m 0755 "$WORKDIR/$EXENAME" "$BINDIR"
+}
+
+install_manifest()
+{
+    sed -e '/^[^:]*:/p' -e "/^[A-Z0-9-]*[[:space:]]*\\(.*$PLAT\\)/p" -e d "$WORKDIR/manifest.txt" >"$BINDIR/$EXENAME.manifest"
 }
 
 # LAUNCH PROCESS
@@ -211,3 +241,7 @@ detect_platform
 detect_signer
 fetch_manifest
 process_manifest
+
+fetch_binary
+install_binary
+install_manifest
