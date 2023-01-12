@@ -223,8 +223,8 @@ install_manifest()
 # LAUNCH PROCESS
 
 # override configuration variables from sidecar files
-[ -r "$SCRIPTDIR/fetch-tclbuild.cfg" ] && . "$SCRIPTDIR/fetch-tclbuild.cfg"
-[ -r "$SCRIPTDIR/fetch-tclbuild.local" ] && . "$SCRIPTDIR/fetch-tclbuild.local"
+[ -r "$SCRIPTDIR/fetch-tcl-binary.cfg" ] && . "$SCRIPTDIR/fetch-tcl-binary.cfg"
+[ -r "$SCRIPTDIR/fetch-tcl-binary.local" ] && . "$SCRIPTDIR/fetch-tcl-binary.local"
 
 # process command-line options
 while getopts vqa:d:p: flag; do
