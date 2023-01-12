@@ -3,6 +3,7 @@
 # Fetch a TCL executable from TCLbuild (https://tcl.ekstrandom.net/).
 
 verbosity=0
+do_install=yes
 
 # DEFAULT CONFIGURATION
 
@@ -194,6 +195,7 @@ process_manifest()
 {
     TCL_BASENAME=$(awk '/^basename:/ {print $2}' "$WORKDIR/manifest.txt")
     _info "$PRODUCT basename: $TCL_BASENAME"
+    DIST_EXENAME="$TCL_BASENAME-$PLAT"
     EXENAME="$CMDNAME-$PLAT"
 }
 
@@ -202,17 +204,17 @@ process_manifest()
 fetch_binary()
 {
     setup_workdir
-    echo "fetching $EXENAME"
-    fetch_url "$PRODUCT/$EXENAME"
-    fetch_url "$PRODUCT/$EXENAME.$SIG_EXT"
-    verify_file "$WORKDIR/$EXENAME"
+    echo "fetching $DIST_EXENAME"
+    fetch_url "$PRODUCT/$DIST_EXENAME"
+    fetch_url "$PRODUCT/$DIST_EXENAME.$SIG_EXT"
+    verify_file "$WORKDIR/$DIST_EXENAME"
 }
 
 install_binary()
 {
     echo "installing $EXENAME"
     install -d "$BINDIR"
-    install -m 0755 "$WORKDIR/$EXENAME" "$BINDIR"
+    install -m 0755 "$WORKDIR/$DIST_EXENAME" "$BINDIR/$EXENAME"
 }
 
 install_manifest()
@@ -227,11 +229,12 @@ install_manifest()
 [ -r "$SCRIPTDIR/fetch-tcl-binary.local" ] && . "$SCRIPTDIR/fetch-tcl-binary.local"
 
 # process command-line options
-while getopts vqn:a:d:p: flag; do
+while getopts vqnN:a:d:p: flag; do
     case $flag in
         v) verbosity=1;;
         q) verbosity=-1;;
-        n) CMDNAME=$OPTARG;;
+        n) do_install=no;;
+        N) CMDNAME=$OPTARG;;
         a) ARCH=$OPTARG;;
         d) BINDIR=$OPTARG;;
         p) PRODUCT=$OPTARG;;
@@ -244,5 +247,9 @@ fetch_manifest
 process_manifest
 
 fetch_binary
-install_binary
-install_manifest
+if [ "$do_install" = yes ]; then
+    install_binary
+    install_manifest
+else
+    _info "-n specified, not installling"
+fi
