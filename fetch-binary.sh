@@ -162,9 +162,9 @@ fetch_url()
 
     _dbg "fetching $url"
     if which curl >/dev/null 2>&1; then
-        curl --fail -L -o "$WORKDIR/$file" "$url" || exit 2
+        curl --fail -s -L -o "$WORKDIR/$file" "$url" || exit 2
     elif which wget >/dev/null 2>&1; then
-        wget -O "$WORKDIR/$file" "$url" || exit 2
+        wget -q -O "$WORKDIR/$file" "$url" || exit 2
     else
         _err "no supported file retriever found"
         exit 3
