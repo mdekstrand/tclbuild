@@ -1,6 +1,6 @@
 # Specification of build profiles
 
-profile -n 2 -stack jim custom {
+profile -n 3 -stack jim custom {
     -config-arg --without-ext=default
     -config-arg --with-ext=aio,array,exec,file,glob,interp,namespace,package,readdir,regexp,tclcompat
     -post strip
