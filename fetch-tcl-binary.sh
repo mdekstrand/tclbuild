@@ -65,7 +65,7 @@ cleanup()
 setup_workdir()
 {
     if [ -z "$WORKDIR" ]; then
-        WORKDIR=$(mktemp -d -t tclfetch)
+        WORKDIR=$(mktemp -d -t tclfetch.XXXXXXXX)
         _dbg "created working directory $WORKDIR"
     else
         _dbg "working dir already created"
