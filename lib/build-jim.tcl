@@ -130,6 +130,7 @@ proc ::build::finish {} {
 proc ::build::buildinfo {} {
     set buildinfo [dict create]
     dict set buildinfo VERSION [full_version]
+    dict set buildinfo SIZE [file size [executable]]
     foreach ev [array names ::buildenv::envvars] {
         dict set buildinfo $ev $::buildenv::envvars($ev)
     }
