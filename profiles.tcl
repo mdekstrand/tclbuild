@@ -1,6 +1,7 @@
 # Specification of build profiles
 
 profile -n 3 -stack jim custom {
+    -config-arg --disable-lineedit
     -config-arg --without-ext=default
     -config-arg --with-ext=aio,array,exec,file,glob,interp,namespace,package,readdir,regexp,tclcompat
     -post strip
