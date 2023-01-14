@@ -3,4 +3,5 @@
 /site/
 /secret/
 .tool-versions
+/build/
 /book/
