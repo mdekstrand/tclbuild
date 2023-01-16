@@ -89,7 +89,7 @@ proc ::build::configure {} {
     }
 
     msg "jim: configure $config_args"
-    run -cwd $jimdir "./configure" {*}$config_args
+    run -cwd $jimdir sh "./configure" {*}$config_args
 }
 
 proc ::build::make {} {

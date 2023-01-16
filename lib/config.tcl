@@ -90,7 +90,7 @@ proc try_require {pkg onfail} {
         if {[string equal $code "TCL PACKAGE UNFOUND"]} {
             uplevel 1 $onfail
         } else {
-            msg -err "unexpected package import error: $msg"
+            msg -err "unexpected package import error: $res"
             error "import failure"
         }
     }
