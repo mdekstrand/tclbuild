@@ -89,7 +89,7 @@ proc ::build::configure {} {
     }
 
     msg "jim: configure $config_args"
-    run -cwd $jimdir "./configure" {*}$config_args
+    run -cwd $jimdir sh "./configure" {*}$config_args
 }
 
 proc ::build::make {} {
@@ -128,8 +128,10 @@ proc ::build::finish {} {
 }
 
 proc ::build::buildinfo {} {
+    variable jimdir
     set buildinfo [dict create]
     dict set buildinfo VERSION [full_version]
+    dict set buildinfo SIZE [file size [file join $jimdir [executable]]]
     foreach ev [array names ::buildenv::envvars] {
         dict set buildinfo $ev $::buildenv::envvars($ev)
     }
