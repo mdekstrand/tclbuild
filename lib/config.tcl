@@ -27,11 +27,16 @@ namespace eval config {
     }
 
     proc finalize {} {
+        global tcl_platform
         variable arch
         variable os
 
         if {![info exists arch]} {
-            if {[file exists /etc/apk/arch]} {
+            if {[string match MINGW32* $tcl_platform(os)]} {
+                # 32-bit windows, regardless of what arch says
+                msg "using MINGW environment architecture"
+                set arch i686
+            } elseif {[file exists /etc/apk/arch]} {
                 msg "using Alpine architecture"
                 set arch [string trim [read_file /etc/apk/arch]]
             } else {
