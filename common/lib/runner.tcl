@@ -58,9 +58,13 @@ proc runner::run_task {name} {
 }
 
 proc runner::dispatch {tasks} {
+    set start [clock milliseconds]
     foreach task $tasks {
         run_task $task
     }
+    set finish [clock milliseconds]
+    set elapsed [expr {($finish - $start) / 1000.0}]
+    msg -success "finished in" -fg white [format "%.2fs" $elapsed]
 }
 
 proc runner::list_tasks {} {
@@ -72,7 +76,7 @@ proc runner::list_tasks {} {
             set deps [kvlookup -default "" -array task_info $task deps]
             set desc [kvlookup -default "" -array task_info $task description]
             if {$desc eq ""} {
-                puts "[ansi::fmt -bold]$task[ansi::fmt -reset]
+                puts "[ansi::fmt -bold]$task[ansi::fmt -reset]"
             } else {
                 puts "[ansi::fmt -bold]$task[ansi::fmt -reset]: $desc"
             }

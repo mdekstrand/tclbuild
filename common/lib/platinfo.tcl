@@ -3,6 +3,7 @@
 #   Provide information about the system platform.
 package provide platinfo 0.1
 package require logging
+package require fsextra
 
 namespace eval ::plat {
     variable cache
@@ -77,6 +78,75 @@ namespace eval ::plat {
         }
     }
 
+    proc distro {} {
+        variable cache
+        if {[info exists cache(distro)]} {
+            return $cache(distro)
+        }
+
+        if {[file exists /etc/os-release]} {
+            set release [read_file /etc/os-release]
+            set script [regsub -all -line {^([A-Z0-9_]+)=} $release "\\1 "]
+            foreach {key value} $script {
+                msg -debug "release: $key=$value"
+            }
+            set relvars [dict create {*}$script]
+            if {[dict exists $relvars ID]} {
+                set distro [dict get $relvars ID]
+            } else {
+                msg -warn "/etc/os-release: no ID defined"
+                set distro "unknown"
+            }
+            if {[dict exists $relvars VERSION_ID]} {
+                append distro "-[dict get $relvars VERSION_ID]"
+            } else {
+                msg -warn "/etc/os-release: no VERSION_ID defined"
+            }
+            set cache(distro) $distro
+        } elseif {[flavor] eq "msys2"} {
+            set cache(distro) msys2
+        } else {
+            set cache(distro) "unknown"
+        }
+
+        return $cache(distro)
+    }
+
+    proc libc {} {
+        variable cache
+        set libc_paths {
+            /usr/lib/libc.so.6
+            /usr/lib/libc.so
+        }
+        if {[info exists cache(libc)]} {
+            return $cache(libc)
+        }
+
+        set cache(libc) unknown
+        foreach path $libc_paths {
+            if {![file exists $path]} {
+                msg -debug "$path not found"
+                continue
+            }
+
+            set rc [catch {
+                set tag [exec strings $path | grep -E ^(glibc|musl)]
+                if {[string match musl* $tag]} {
+                    set cache(libc) musl
+                } elseif {[string match glibc* $tag]} {
+                    set cache(libc) [string map {" " -} $tag]
+                }
+            } rv rerr]
+            if {$rc} {
+                msg -error "failed to scan libc: $rv"
+            }
+            # got this far, we found a libc, or can't scan one
+            break
+        }
+
+        return $cache(libc)
+    }
+
     proc is {args} {
         set result 1
         foreach arg $args {
@@ -90,6 +160,12 @@ namespace eval ::plat {
                 }
                 mac {
                     set result [expr {$result && [os] eq "darwin"}]
+                }
+                musl {
+                    set result [expr {$result && [libc] eq "musl"}]
+                }
+                glibc {
+                    set result [expr {$result && [string match glibc-* [libc]]}]
                 }
                 -* {
                     set query [string range $arg 1 end]
@@ -105,5 +181,5 @@ namespace eval ::plat {
         return $result
     }
 
-    namespace export tag os arch is
+    namespace export tag os arch flavor is
 }
