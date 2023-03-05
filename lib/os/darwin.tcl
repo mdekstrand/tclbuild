@@ -8,5 +8,7 @@ namespace eval ::buildenv {
         set host_arch [plat::arch]
         set cflags "-Os -mmacosx-version-min=11.0 -arch $config::arch"
         ::buildenv::setvar CFLAGS $cflags
+        # ::buildenv::setvar CPPFLAGS "-I/opt/homebrew/opt/libressl/include"
+        # ::buildenv::setvar LIBS "/opt/homebrew/opt/libressl/lib/libssl.a /opt/homebrew/opt/libressl/lib/libcrypto.a"
     }
 }
