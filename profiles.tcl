@@ -2,14 +2,18 @@
 
 profile -n 1 -stack jim custom {
     -config-arg --disable-lineedit
+    -config-arg --disable-ssl
     -config-arg --without-ext=default
     -config-arg --with-ext=aio,array,ensemble,exec,file,glob,interp,json,namespace,oo,package,readdir,regexp,tclcompat
     -post strip
 }
 
-profile -n 1 -stack jim default {}
+profile -n 1 -stack jim default {
+    -config-arg --disable-ssl
+}
 
 profile -n 1 -stack jim full {
+    -config-arg --disable-ssl
     -config-arg --full
 }
 
