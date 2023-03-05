@@ -1,5 +1,5 @@
 package provide tbs::openssl 1.0
-package require runprog
+package require oscmd
 
 namespace eval ::tbs::openssl {} {
     proc init {dir name} {
@@ -36,23 +36,23 @@ namespace eval ::tbs::openssl {} {
         array set files [files]
 
         msg "openssl: generating private key"
-        run openssl genrsa -passout $pass -out $files(secret)
+        oscmd run openssl genrsa -passout $pass -out $files(secret)
         msg "openssl: extracting public key"
-        run openssl pkey -in $files(secret) -passin $pass -pubout -out $files(public)
+        oscmd run openssl pkey -in $files(secret) -passin $pass -pubout -out $files(public)
     }
 
     proc sign_file {pass file} {
         array set files [files]
 
         msg "openssl: signing $file"
-        run openssl dgst -sign $files(secret) -passin $pass -sha256 -out "$file.rsasig" $file
+        oscmd run openssl dgst -sign $files(secret) -passin $pass -sha256 -out "$file.rsasig" $file
     }
 
     proc verify_file {file} {
         array set files [files]
 
         msg -debug "openssl: verifying $file"
-        set rc [run -noout -retfail openssl dgst -verify $files(public) -signature "$file.rsasig" $file]
+        set rc [oscmd run -noout -retfail openssl dgst -verify $files(public) -signature "$file.rsasig" $file]
         if {$rc} {
             msg -err "openssl: $file VERIFICATION FAILED"
             return 0

@@ -1,5 +1,5 @@
 package provide tbs::signify 1.0
-package require runprog
+package require oscmd
 
 namespace eval ::tbs::signify {} {
     proc init {dir name} {
@@ -36,21 +36,21 @@ namespace eval ::tbs::signify {} {
         array set files [files]
 
         msg "signify: generating private key"
-        run expect -f drive-signer.tcl $pass signify -G -c $key_name -s $files(secret) -p $files(public)
+        oscmd run expect -f drive-signer.tcl $pass signify -G -c $key_name -s $files(secret) -p $files(public)
     }
 
     proc sign_file {pass file} {
         array set files [files]
 
         msg "signify: signing $file"
-        run expect -f drive-signer.tcl $pass signify -S -s $files(secret) -m $file
+        oscmd run expect -f drive-signer.tcl $pass signify -S -s $files(secret) -m $file
     }
 
     proc verify_file {file} {
         array set files [files]
 
         msg -debug "signify: verifying $file"
-        set rc [run -noout -retfail signify -V -q -p $files(public) -m $file]
+        set rc [oscmd run -noout -retfail signify -V -q -p $files(public) -m $file]
         if {$rc} {
             msg -err "signify: $file VERIFICATION FAILED"
             return 0

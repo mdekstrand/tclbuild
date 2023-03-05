@@ -3,7 +3,7 @@ package require tclbuild::config
 package require tclbuild::buildenv
 package require tclbuild::profiledb
 package require missing
-package require runprog
+package require oscmd
 
 namespace eval ::build {
     variable kcdir kitcreator
@@ -64,7 +64,7 @@ proc ::build::full_version {} {
 proc ::build::clean {} {
     variable kcdir
     msg "tclkit: cleaning $kcdir"
-    run -cwd $kcdir ./kitcreator clean
+    oscmd run -cwd $kcdir ./kitcreator clean
 }
 
 proc ::build::configure {} {
@@ -83,7 +83,7 @@ proc ::build::make {} {
         set ::env(KITCREATOR_PKGS) [join $packages " "]
     }
     msg "tclkit: make"
-    run -cwd $kcdir ./kitcreator $version
+    oscmd run -cwd $kcdir ./kitcreator $version
     msg -debug "checking for build artifact"
     set exe [executable]
     if {![file exists [file join $kcdir $exe]]} {

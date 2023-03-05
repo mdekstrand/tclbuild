@@ -1,5 +1,5 @@
 package provide tbs::minisign 1.0
-package require runprog
+package require oscmd
 
 namespace eval ::tbs::minisign {} {
     proc init {dir name} {
@@ -37,21 +37,21 @@ namespace eval ::tbs::minisign {} {
         array set files [files]
 
         msg "minisign: generating private key"
-        run expect -f drive-signer.tcl $pass minisign -G -c $key_name -s $files(secret) -p $files(public)
+        oscmd run expect -f drive-signer.tcl $pass minisign -G -c $key_name -s $files(secret) -p $files(public)
     }
 
     proc sign_file {pass file} {
         array set files [files]
 
         msg "minisign: signing $file"
-        run expect -f drive-signer.tcl $pass minisign -S -s $files(secret) -m $file
+        oscmd run expect -f drive-signer.tcl $pass minisign -S -s $files(secret) -m $file
     }
 
     proc verify_file {file} {
         array set files [files]
 
         msg -debug "minisign: verifying $file"
-        set rc [run -noout -retfail minisign -V -p $files(public) -m $file]
+        set rc [oscmd run -noout -retfail minisign -V -p $files(public) -m $file]
         if {$rc} {
             msg -err "minisign: $file VERIFICATION FAILED"
             return 0

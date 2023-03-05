@@ -3,7 +3,7 @@ package require tclbuild::config
 package require tclbuild::buildenv
 package require tclbuild::profiledb
 package require missing
-package require runprog
+package require oscmd
 
 namespace eval ::build {
     variable jimdir jimtcl
@@ -74,7 +74,7 @@ proc ::build::clean {} {
     variable jimdir
     if {[file exists [file join $jimdir Makefile]]} {
         msg "jim: cleaning build"
-        run make -C $jimdir distclean
+        oscmd run make -C $jimdir distclean
     } else {
         msg "jim: no Makefile, clean looks unnecessary"
     }
@@ -89,13 +89,13 @@ proc ::build::configure {} {
     }
 
     msg "jim: configure $config_args"
-    run -cwd $jimdir sh "./configure" {*}$config_args
+    oscmd run -cwd $jimdir sh "./configure" {*}$config_args
 }
 
 proc ::build::make {} {
     variable jimdir
     msg "jim: make"
-    run make -C $jimdir
+    oscmd run make -C $jimdir
     msg -debug "checking for build artifact"
     set exe [executable]
     if {![file exists [file join $jimdir $exe]]} {
@@ -110,7 +110,7 @@ proc ::build::postprocess {} {
     set exe [executable]
     if {"strip" in $post_steps} {
         msg "jim: stripping $exe"
-        run strip "$jimdir/$exe"
+        oscmd run strip "$jimdir/$exe"
     }
 }
 

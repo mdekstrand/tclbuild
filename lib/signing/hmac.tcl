@@ -1,5 +1,5 @@
 package provide tbs::hmac 1.0
-package require runprog
+package require oscmd
 
 namespace eval ::tbs::hmac {} {
     proc init {dir name} {}
@@ -32,7 +32,7 @@ namespace eval ::tbs::hmac {} {
         set pass [::tclbuild::signing::load_password $pass]
 
         msg "hmac: signing $file"
-        run openssl dgst -hmac $pass -sha256 -hex -out "$file.mac" $file
+        oscmd run openssl dgst -hmac $pass -sha256 -hex -out "$file.mac" $file
     }
 
     proc verify_file {file} {

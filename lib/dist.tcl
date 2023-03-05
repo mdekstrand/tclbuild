@@ -1,7 +1,6 @@
 # procedures for working with the distribution area
 package provide tclbuild::distrepo 1.0
 package require tclbuild::config
-package require runprog
 
 namespace eval ::tclbuild::dist {
     # list products that have been built.
