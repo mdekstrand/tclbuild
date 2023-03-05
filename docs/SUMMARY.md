@@ -8,6 +8,7 @@
 - [kvlookup](common/kvlookup.md)
 - [logging](common/logging.md)
 - [ansifmt](common/ansifmt.md)
+- [fsextra](common/fsextra.md)
 
 # Tcl Binaries
 
