@@ -8,8 +8,9 @@ profile -n 1 -stack jim custom {
     -post strip
 }
 
-profile -n 1 -stack jim default {
+profile -n 2 -stack jim default {
     -config-arg --disable-ssl
+    -config-arg --without-ext=zlib
 }
 
 profile -n 1 -stack jim full {
