@@ -1,10 +1,10 @@
 # Specification of build profiles
 
-profile -n 1 -stack jim custom {
+profile -n 2 -stack jim custom {
     -config-arg --disable-lineedit
     -config-arg --disable-ssl
     -config-arg --without-ext=default
-    -config-arg --with-ext=aio,array,ensemble,exec,file,glob,interp,json,namespace,oo,package,readdir,regexp,tclcompat
+    -config-arg --with-ext=aio,array,clock,ensemble,exec,file,glob,interp,json,namespace,oo,package,readdir,regexp,tclcompat
     -post strip
 }
 
