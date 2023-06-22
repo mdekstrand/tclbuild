@@ -273,9 +273,8 @@ jobs:
         cp -v keys/*.pub site/dist/
 
     - name: 📤 Deploy site
-      uses: netlify/actions/cli@master
       if: ${{ env.NETLIFY_AUTH_TOKEN }}
-      with:
-        args: deploy --dir=site --prod
+      run: |
+        netlify deploy --dir=site --prod
       env:
         NETLIFY_SITE_ID: 5dff77d2-34d5-4a8a-b9bd-b9464b0d88fc
