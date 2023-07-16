@@ -1,0 +1,26 @@
+context:
+  version: "0.82"
+
+package:
+  name: jimtcl
+  version: "{{ version }}"
+
+source:
+  git_url: https://github.com/msteveb/jimtcl.git
+  git_rev: "{{ version }}"
+
+build:
+  number: 0
+
+requirements:
+  build:
+  - "{{ compiler('c') }}"
+  - make
+  - pkg-config
+  host:
+  - zlib
+  - openssl
+
+test:
+  commands:
+  - jimsh --version
