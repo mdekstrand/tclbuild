@@ -6,20 +6,36 @@ package:
   version: "{{ version }}"
 
 source:
-  git_url: https://github.com/msteveb/jimtcl.git
-  git_rev: "{{ version }}"
+  - git_url: https://github.com/msteveb/jimtcl.git
+    git_rev: "{{ version }}"
+  - sel(win):
+      path: build.sh
 
 build:
   number: 0
 
 requirements:
   build:
-  - "{{ compiler('c') }}"
-  - make
-  - pkg-config
+  - sel(not win):
+    - "{{ compiler('c') }}"
+    - make
+    - pkg-config
+  - sel(win):
+    - m2w64-gcc
+    - m2w64-make
+    - m2-bash
+    - m2-coreutils
+    - m2-sed
+    - m2-pkg-config
   host:
-  - zlib
-  - openssl
+  - sel(not win):
+    - zlib
+    - openssl
+  - sel(win):
+    - m2w64-zlib
+  run:
+    - sel(win):
+      - m2w64-zlib
 
 test:
   commands:
